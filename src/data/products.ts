@@ -23,6 +23,10 @@ export type Product = {
   description: string;
   material: string;
   sold: number;
+  isFreeship?: boolean;
+  hasCoinCashback?: boolean;
+  hasGift?: boolean;
+  createdAt: string;
 };
 
 export const categories = [
