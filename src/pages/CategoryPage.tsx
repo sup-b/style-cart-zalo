@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { categories, products, formatPrice } from '@/data/products';
-import { Shirt, Briefcase, Sparkles, Watch, ShoppingBag, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Shirt, Briefcase, Sparkles, Watch, ShoppingBag, Tag, Gem, Heart, ArrowLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 
@@ -13,16 +13,35 @@ const iconMap: Record<string, LucideIcon> = {
 
 const getIcon = (name: string): LucideIcon => iconMap[name] || ShoppingBag;
 
+// Same data as HomeCategoryMenu for consistency
+type CategoryLink = {
+  id: string;
+  name: string;
+  icon: LucideIcon;
+  categoryId: string | null; // null means it links to products page
+};
+
+const categoryLinks: CategoryLink[] = [
+  { id: 'ao', name: 'Áo', icon: Shirt, categoryId: 'ao' },
+  { id: 'quan', name: 'Quần', icon: Briefcase, categoryId: 'quan' },
+  { id: 'vay', name: 'Váy đầm', icon: Sparkles, categoryId: 'vay' },
+  { id: 'phukien', name: 'Phụ kiện', icon: Watch, categoryId: 'phukien' },
+  { id: 'tuixach', name: 'Túi xách', icon: ShoppingBag, categoryId: 'phukien' },
+  { id: 'trangsuc', name: 'Trang sức', icon: Gem, categoryId: 'phukien' },
+  { id: 'new', name: 'Hàng mới', icon: Heart, categoryId: null },
+  { id: 'sale', name: 'Khuyến mãi', icon: Tag, categoryId: null },
+];
+
 export default function CategoryPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const selectedCat = categories.find(c => c.id === selectedCategory);
+  const selectedCat = categoryLinks.find(c => c.id === selectedCategory);
   const filteredProducts = selectedCategory
-    ? products.filter(p => p.category === selectedCategory)
+    ? products.filter(p => p.category === (selectedCat?.categoryId ?? selectedCategory))
     : [];
 
   if (selectedCategory && selectedCat) {
-    const Icon = getIcon(selectedCat.name);
+    const Icon = selectedCat.icon;
     return (
       <div className="min-h-screen bg-background pb-20">
         {/* Header */}
@@ -89,34 +108,30 @@ export default function CategoryPage() {
     );
   }
 
-  // Category list view
+  // Category grid view — same layout as HomeCategoryMenu
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md px-4 py-3">
         <h1 className="font-display text-xl font-semibold">Danh mục</h1>
       </div>
 
-      <div className="space-y-2 p-4">
-        {categories.map(cat => {
-          const Icon = getIcon(cat.name);
-          const count = products.filter(p => p.category === cat.id).length;
-          return (
+      <div className="px-4 py-5">
+        <div className="grid grid-cols-4 gap-y-4">
+          {categoryLinks.map(({ id, name, icon: Icon, categoryId }) => (
             <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className="flex w-full items-center gap-4 rounded-lg border border-border bg-card p-4 transition-colors active:bg-secondary"
+              key={id}
+              onClick={() => categoryId ? setSelectedCategory(id) : undefined}
+              className="flex flex-col items-center gap-1.5 transition-transform active:scale-95"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
                 <Icon className="h-5 w-5 text-foreground/70" strokeWidth={1.5} />
               </div>
-              <div className="text-left">
-                <p className="font-body text-sm font-semibold">{cat.name}</p>
-                <p className="font-body text-[11px] text-muted-foreground">{count} sản phẩm</p>
-              </div>
-              <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground/50" strokeWidth={1.5} />
+              <span className="w-full truncate text-center font-body text-xs text-muted-foreground">
+                {name}
+              </span>
             </button>
-          );
-        })}
+          ))}
+        </div>
       </div>
     </div>
   );
