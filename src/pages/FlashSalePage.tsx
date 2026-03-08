@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Zap, ShoppingCart, Flame } from 'lucide-react';
+import { ArrowLeft, Zap, Flame } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { products, formatPrice } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 
 export default function FlashSalePage() {
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { addItem } = useCart();
   const [timeLeft, setTimeLeft] = useState({ h: 1, m: 45, s: 22 });
 
   useEffect(() => {
