@@ -54,6 +54,12 @@ const App = () => (
                       <BottomNav />
                     </div>
                   } />
+                  <Route path="/categories" element={
+                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                      <CategoryPage />
+                      <BottomNav />
+                    </div>
+                  } />
                   <Route path="/product/:id" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <ProductDetailPage />
