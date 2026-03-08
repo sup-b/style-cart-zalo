@@ -1,4 +1,4 @@
-import { Home, Search, ShoppingBag, Heart, User } from 'lucide-react';
+import { Home, Search, ShoppingBag, Heart } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 
@@ -7,16 +7,18 @@ const navItems = [
   { path: '/products', icon: Search, label: 'Khám phá' },
   { path: '/wishlist', icon: Heart, label: 'Yêu thích' },
   { path: '/cart', icon: ShoppingBag, label: 'Giỏ hàng' },
-  { path: '/admin', icon: User, label: 'Quản trị' },
 ];
 
 export default function BottomNav() {
   const location = useLocation();
   const { totalItems } = useCart();
 
+  // Hide on admin routes
+  if (location.pathname.startsWith('/admin')) return null;
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur-md">
-      <div className="flex items-center justify-around py-2">
+      <div className="mx-auto flex max-w-md items-center justify-around py-2">
         {navItems.map(({ path, icon: Icon, label }) => {
           const active = location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
           return (
