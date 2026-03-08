@@ -15,7 +15,7 @@ const subCategories = [
 
 export default function FashionCategoryPage() {
   const navigate = useNavigate();
-  const { itemCount } = useCart();
+  const { totalItems } = useCart();
   const [search, setSearch] = useState('');
   const [activeSub, setActiveSub] = useState('');
 
