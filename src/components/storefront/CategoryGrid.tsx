@@ -2,14 +2,14 @@ import { Truck, Coins, ShirtIcon, Zap, Ticket, Gift, Tag, Sparkles } from 'lucid
 import { Link } from 'react-router-dom';
 
 const categories = [
-  { icon: Truck, label: 'Freeship Xtra', color: 'text-emerald-500', path: '/products' },
-  { icon: Coins, label: 'Hoàn xu', color: 'text-amber-500', path: '/products' },
+  { icon: Truck, label: 'Freeship Xtra', color: 'text-emerald-500', path: '/category/freeship' },
+  { icon: Coins, label: 'Hoàn xu', color: 'text-amber-500', path: '/category/cashback' },
   { icon: ShirtIcon, label: 'Thời trang nữ', color: 'text-pink-500', path: '/products?category=vay' },
-  { icon: Zap, label: 'Deal sốc', color: 'text-primary', path: '/products' },
+  { icon: Zap, label: 'Deal sốc', color: 'text-primary', path: '/category/deal' },
   { icon: Ticket, label: 'Voucher', color: 'text-blue-500', path: '/products' },
-  { icon: Gift, label: 'Quà tặng', color: 'text-purple-500', path: '/products' },
-  { icon: Tag, label: 'Đang giảm giá', color: 'text-red-500', path: '/products' },
-  { icon: Sparkles, label: 'Hàng mới', color: 'text-indigo-500', path: '/products' },
+  { icon: Gift, label: 'Quà tặng', color: 'text-purple-500', path: '/category/gift' },
+  { icon: Tag, label: 'Đang giảm giá', color: 'text-red-500', path: '/category/sale' },
+  { icon: Sparkles, label: 'Hàng mới', color: 'text-indigo-500', path: '/category/new' },
 ];
 
 export default function CategoryGrid() {
