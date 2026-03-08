@@ -15,6 +15,7 @@ import ShopeeBottomNav from "@/components/storefront/ShopeeBottomNav";
 import HomePage from "./pages/HomePage";
 import ProductsPage from "./pages/ProductsPage";
 import CategoryProductsPage from "./pages/CategoryProductsPage";
+import FashionCategoryPage from "./pages/FashionCategoryPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
