@@ -53,10 +53,9 @@ const App = () => (
                   <Route path="/cart" element={<UserLayout><CartPage /></UserLayout>} />
                   <Route path="/checkout" element={<UserLayout><CheckoutPage /></UserLayout>} />
                   <Route path="/wishlist" element={<UserLayout><WishlistPage /></UserLayout>} />
-                  {/* Placeholder routes for new tabs */}
-                  <Route path="/live" element={<UserLayout><PlaceholderPage title="Live" /></UserLayout>} />
-                  <Route path="/notifications" element={<UserLayout><PlaceholderPage title="Thông báo" /></UserLayout>} />
-                  <Route path="/profile" element={<UserLayout><PlaceholderPage title="Tôi" /></UserLayout>} />
+                   {/* Placeholder routes for new tabs */}
+                   <Route path="/notifications" element={<UserLayout><PlaceholderPage title="Thông báo" /></UserLayout>} />
+                   <Route path="/profile" element={<UserLayout><PlaceholderPage title="Tôi" /></UserLayout>} />
 
                   {/* Admin routes */}
                   <Route path="/admin/login" element={<AdminLoginPage />} />
