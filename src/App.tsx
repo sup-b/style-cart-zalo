@@ -7,11 +7,10 @@ import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { OrderProvider } from "@/context/OrderContext";
 import { AuthProvider } from "@/context/AuthContext";
-import BottomNav from "@/components/BottomNav";
-import ZaloChatButton from "@/components/ZaloChatButton";
 import DevRoleToggle from "@/components/DevRoleToggle";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 import AdminLayout from "@/components/AdminLayout";
+import ShopeeBottomNav from "@/components/storefront/ShopeeBottomNav";
 
 import HomePage from "./pages/HomePage";
 import ProductsPage from "./pages/ProductsPage";
@@ -28,6 +27,13 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const UserLayout = ({ children }: { children: React.ReactNode }) => (
+  <div className="mx-auto max-w-md min-h-screen bg-background relative">
+    {children}
+    <ShopeeBottomNav />
+  </div>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -41,55 +47,21 @@ const App = () => (
                 <DevRoleToggle />
                 <Routes>
                   {/* User storefront routes */}
-                  <Route path="/" element={
-                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
-                      <HomePage />
-                      <ZaloChatButton />
-                      <BottomNav />
-                    </div>
-                  } />
-                  <Route path="/products" element={
-                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
-                      <ProductsPage />
-                      <ZaloChatButton />
-                      <BottomNav />
-                    </div>
-                  } />
-                  <Route path="/product/:id" element={
-                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
-                      <ProductDetailPage />
-                      <ZaloChatButton />
-                      <BottomNav />
-                    </div>
-                  } />
-                  <Route path="/cart" element={
-                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
-                      <CartPage />
-                      <ZaloChatButton />
-                      <BottomNav />
-                    </div>
-                  } />
-                  <Route path="/checkout" element={
-                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
-                      <CheckoutPage />
-                      <ZaloChatButton />
-                      <BottomNav />
-                    </div>
-                  } />
-                  <Route path="/wishlist" element={
-                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
-                      <WishlistPage />
-                      <ZaloChatButton />
-                      <BottomNav />
-                    </div>
-                  } />
+                  <Route path="/" element={<UserLayout><HomePage /></UserLayout>} />
+                  <Route path="/products" element={<UserLayout><ProductsPage /></UserLayout>} />
+                  <Route path="/product/:id" element={<UserLayout><ProductDetailPage /></UserLayout>} />
+                  <Route path="/cart" element={<UserLayout><CartPage /></UserLayout>} />
+                  <Route path="/checkout" element={<UserLayout><CheckoutPage /></UserLayout>} />
+                  <Route path="/wishlist" element={<UserLayout><WishlistPage /></UserLayout>} />
+                  {/* Placeholder routes for new tabs */}
+                  <Route path="/live" element={<UserLayout><PlaceholderPage title="Live" /></UserLayout>} />
+                  <Route path="/notifications" element={<UserLayout><PlaceholderPage title="Thông báo" /></UserLayout>} />
+                  <Route path="/profile" element={<UserLayout><PlaceholderPage title="Tôi" /></UserLayout>} />
 
                   {/* Admin routes */}
                   <Route path="/admin/login" element={<AdminLoginPage />} />
                   <Route path="/admin" element={
-                    <ProtectedAdminRoute>
-                      <AdminLayout />
-                    </ProtectedAdminRoute>
+                    <ProtectedAdminRoute><AdminLayout /></ProtectedAdminRoute>
                   }>
                     <Route index element={<Navigate to="/admin/dashboard" replace />} />
                     <Route path="dashboard" element={<AdminDashboardPage />} />
@@ -108,5 +80,16 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
 );
+
+function PlaceholderPage({ title }: { title: string }) {
+  return (
+    <div className="flex min-h-screen items-center justify-center pb-16">
+      <div className="text-center space-y-2">
+        <h1 className="font-display text-2xl font-semibold">{title}</h1>
+        <p className="font-body text-xs text-muted-foreground">Tính năng đang phát triển</p>
+      </div>
+    </div>
+  );
+}
 
 export default App;
