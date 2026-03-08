@@ -4,7 +4,7 @@ import { useCart } from '@/context/CartContext';
 
 const navItems = [
   { path: '/', icon: Home, label: 'Trang chủ' },
-  { path: '/products', icon: LayoutGrid, label: 'Danh mục' },
+  { path: '/categories', icon: LayoutGrid, label: 'Danh mục' },
   { path: '/cart', icon: ShoppingBag, label: 'Giỏ hàng' },
   { path: '/wishlist', icon: User, label: 'Cá nhân' },
 ];
