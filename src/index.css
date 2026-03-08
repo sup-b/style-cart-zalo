@@ -6,45 +6,35 @@
 
 @layer base {
   :root {
-    --background: 0 0% 96%;
-    --foreground: 0 0% 13%;
+    --background: 40 20% 98%;
+    --foreground: 0 0% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 13%;
+    --card-foreground: 0 0% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 13%;
+    --popover-foreground: 0 0% 8%;
 
-    --primary: 17 100% 52%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 8%;
+    --primary-foreground: 40 20% 98%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 13%;
+    --secondary: 35 30% 93%;
+    --secondary-foreground: 0 0% 8%;
 
-    --muted: 0 0% 94%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 35 15% 95%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 17 100% 96%;
-    --accent-foreground: 17 100% 45%;
+    --accent: 35 30% 88%;
+    --accent-foreground: 0 0% 8%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 91%;
-    --input: 0 0% 91%;
-    --ring: 17 100% 52%;
+    --border: 35 15% 90%;
+    --input: 35 15% 90%;
+    --ring: 0 0% 8%;
 
     --radius: 0.25rem;
-
-    /* Shopee-specific tokens */
-    --shopee-orange: 17 100% 52%;
-    --shopee-orange-light: 17 100% 96%;
-    --shopee-orange-dark: 17 100% 42%;
-    --shopee-red: 0 85% 55%;
-    --shopee-yellow: 45 100% 55%;
-    --shopee-gradient: linear-gradient(135deg, hsl(17, 100%, 55%), hsl(10, 100%, 50%));
-    --shopee-header-gradient: linear-gradient(180deg, hsl(17, 100%, 52%), hsl(12, 100%, 48%));
-    --badge-red: 0 90% 50%;
 
     --beige: 35 30% 93%;
     --beige-dark: 35 20% 85%;
@@ -70,8 +60,8 @@
     --card-foreground: 40 20% 95%;
     --popover: 0 0% 8%;
     --popover-foreground: 40 20% 95%;
-    --primary: 17 100% 52%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 40 20% 95%;
+    --primary-foreground: 0 0% 8%;
     --secondary: 0 0% 15%;
     --secondary-foreground: 40 20% 95%;
     --muted: 0 0% 15%;
@@ -82,7 +72,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 18%;
     --input: 0 0% 18%;
-    --ring: 17 100% 52%;
+    --ring: 40 20% 95%;
   }
 }
 
@@ -106,34 +96,16 @@
   .font-body {
     font-family: var(--font-body);
   }
-  .bg-shopee-gradient {
-    background: var(--shopee-gradient);
-  }
-  .bg-shopee-header {
-    background: var(--shopee-header-gradient);
-  }
 }
 
+/* Hide scrollbar */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Smooth image transitions */
 .img-hover {
   @apply transition-transform duration-500 ease-out;
 }
 .img-hover:hover {
   @apply scale-105;
-}
-
-/* Flash sale progress bar */
-.flash-progress {
-  @apply relative h-3 overflow-hidden rounded-full;
-  background: hsl(var(--shopee-orange-light));
-}
-.flash-progress-bar {
-  @apply absolute inset-y-0 left-0 rounded-full;
-  background: var(--shopee-gradient);
-}
-.flash-progress-text {
-  @apply absolute inset-0 flex items-center justify-center text-[8px] font-bold uppercase tracking-wider;
-  color: hsl(var(--primary-foreground));
 }

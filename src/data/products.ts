@@ -23,10 +23,6 @@ export type Product = {
   description: string;
   material: string;
   sold: number;
-  isFreeship?: boolean;
-  hasCoinCashback?: boolean;
-  hasGift?: boolean;
-  createdAt: string;
 };
 
 export const categories = [
@@ -77,7 +73,6 @@ export const products: Product[] = [
     images: ['https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600', 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600', 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600'],
     colors: blackWhite, sizes: allSizes, variants: generateVariants(allSizes, blackWhite),
     description: 'Blazer dáng rộng phong cách hiện đại, phù hợp cho cả công sở và dạo phố.', material: '65% Polyester, 35% Viscose', sold: 142,
-    isFreeship: true, hasCoinCashback: true, hasGift: false, createdAt: '2026-03-01',
   },
   {
     id: '2', name: 'Silk Camisole Top', nameVi: 'Áo Hai Dây Lụa', category: 'ao',
@@ -85,7 +80,6 @@ export const products: Product[] = [
     images: ['https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=600', 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600'],
     colors: pastel, sizes: allSizes, variants: generateVariants(allSizes, pastel),
     description: 'Áo hai dây chất liệu lụa mềm mại, thanh lịch cho mọi dịp.', material: '100% Lụa tự nhiên', sold: 230,
-    isFreeship: false, hasCoinCashback: true, hasGift: true, createdAt: '2026-03-05',
   },
   {
     id: '3', name: 'Wide Leg Trousers', nameVi: 'Quần Ống Rộng', category: 'quan',
@@ -93,7 +87,6 @@ export const products: Product[] = [
     images: ['https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=600', 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600'],
     colors: earthTones, sizes: allSizes, variants: generateVariants(allSizes, earthTones),
     description: 'Quần ống rộng thanh lịch, tôn dáng cho mọi vóc người.', material: '80% Cotton, 20% Linen', sold: 187,
-    isFreeship: true, hasCoinCashback: false, hasGift: false, createdAt: '2026-02-20',
   },
   {
     id: '4', name: 'Tailored Slim Pants', nameVi: 'Quần Âu Ôm', category: 'quan',
@@ -101,7 +94,6 @@ export const products: Product[] = [
     images: ['https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600', 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600'],
     colors: blackWhite, sizes: allSizes, variants: generateVariants(allSizes, blackWhite),
     description: 'Quần âu dáng ôm cổ điển, phù hợp cho mọi phong cách.', material: '70% Polyester, 30% Rayon', sold: 156,
-    isFreeship: false, hasCoinCashback: false, hasGift: false, createdAt: '2026-02-15',
   },
   {
     id: '5', name: 'Midi Wrap Dress', nameVi: 'Váy Quấn Midi', category: 'vay',
@@ -109,7 +101,6 @@ export const products: Product[] = [
     images: ['https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600', 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600'],
     colors: earthTones, sizes: allSizes, variants: generateVariants(allSizes, earthTones),
     description: 'Váy quấn midi nữ tính, tôn vòng eo cho phái đẹp.', material: '100% Viscose', sold: 298,
-    isFreeship: true, hasCoinCashback: true, hasGift: true, createdAt: '2026-03-07',
   },
   {
     id: '6', name: 'Slip Dress Satin', nameVi: 'Váy Suông Satin', category: 'vay',
@@ -117,7 +108,6 @@ export const products: Product[] = [
     images: ['https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600', 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=600'],
     colors: pastel, sizes: allSizes, variants: generateVariants(allSizes, pastel),
     description: 'Váy suông satin mềm mịn, sang trọng cho buổi tối.', material: '95% Polyester Satin, 5% Spandex', sold: 175,
-    isFreeship: true, hasCoinCashback: false, hasGift: false, createdAt: '2026-01-10',
   },
   {
     id: '7', name: 'Leather Tote Bag', nameVi: 'Túi Tote Da', category: 'phukien',
@@ -126,7 +116,6 @@ export const products: Product[] = [
     colors: [{ name: 'Nâu', hex: '#8b6f47' }, { name: 'Đen', hex: '#1a1a1a' }],
     sizes: ['One Size'], variants: [{ size: 'One Size', color: 'Nâu', stock: 15 }, { size: 'One Size', color: 'Đen', stock: 12 }],
     description: 'Túi tote da thật cao cấp, dung tích lớn cho mọi nhu cầu.', material: '100% Da bò thật', sold: 89,
-    isFreeship: false, hasCoinCashback: true, hasGift: true, createdAt: '2026-03-08',
   },
   {
     id: '8', name: 'Minimalist Watch', nameVi: 'Đồng Hồ Minimalist', category: 'phukien',
@@ -135,7 +124,6 @@ export const products: Product[] = [
     colors: [{ name: 'Vàng hồng', hex: '#b76e79' }, { name: 'Bạc', hex: '#c0c0c0' }],
     sizes: ['One Size'], variants: [{ size: 'One Size', color: 'Vàng hồng', stock: 8 }, { size: 'One Size', color: 'Bạc', stock: 10 }],
     description: 'Đồng hồ phong cách tối giản, thanh lịch cho mọi cổ tay.', material: 'Thép không gỉ, mặt kính sapphire', sold: 67,
-    isFreeship: true, hasCoinCashback: false, hasGift: false, createdAt: '2026-02-28',
   },
 ];
 
