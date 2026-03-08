@@ -46,9 +46,9 @@ export default function FashionCategoryPage() {
           </div>
           <Link to="/cart" className="relative flex h-8 w-8 shrink-0 items-center justify-center text-primary-foreground">
             <ShoppingCart className="h-5 w-5" />
-            {itemCount > 0 && (
+            {totalItems > 0 && (
               <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
-                {itemCount}
+                {totalItems}
               </span>
             )}
           </Link>
