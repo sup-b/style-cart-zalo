@@ -12,15 +12,7 @@ export default function ProductFeed() {
   const handleQuickAdd = (e: React.MouseEvent, product: typeof products[0]) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem({
-      productId: product.id,
-      name: product.nameVi,
-      price: product.price,
-      image: product.images[0],
-      size: product.sizes[0],
-      color: product.colors[0].name,
-      quantity: 1,
-    });
+    addItem(product, product.sizes[0], product.colors[0].name, 1);
     toast.success('Đã thêm vào giỏ hàng');
   };
 
