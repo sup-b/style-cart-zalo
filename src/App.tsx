@@ -44,42 +44,36 @@ const App = () => (
                   <Route path="/" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <HomePage />
-                      <ZaloChatButton />
                       <BottomNav />
                     </div>
                   } />
                   <Route path="/products" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <ProductsPage />
-                      <ZaloChatButton />
                       <BottomNav />
                     </div>
                   } />
                   <Route path="/product/:id" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <ProductDetailPage />
-                      <ZaloChatButton />
                       <BottomNav />
                     </div>
                   } />
                   <Route path="/cart" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <CartPage />
-                      <ZaloChatButton />
                       <BottomNav />
                     </div>
                   } />
                   <Route path="/checkout" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <CheckoutPage />
-                      <ZaloChatButton />
                       <BottomNav />
                     </div>
                   } />
                   <Route path="/wishlist" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <WishlistPage />
-                      <ZaloChatButton />
                       <BottomNav />
                     </div>
                   } />
