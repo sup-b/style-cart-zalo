@@ -34,15 +34,7 @@ export default function FlashSalePage() {
   });
 
   const handleBuy = (p: typeof dealProducts[0]) => {
-    addToCart({
-      productId: p.id,
-      name: p.nameVi,
-      price: p.price,
-      image: p.images[0],
-      color: p.colors[0]?.name || '',
-      size: p.sizes[0] || '',
-      quantity: 1,
-    });
+    addItem(p, p.sizes[0] || 'M', p.colors[0]?.name || '', 1);
   };
 
   return (

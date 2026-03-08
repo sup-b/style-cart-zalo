@@ -5,7 +5,7 @@ const categories = [
   { icon: Truck, label: 'Freeship Xtra', color: 'text-emerald-500', path: '/category/freeship' },
   { icon: Coins, label: 'Hoàn xu', color: 'text-amber-500', path: '/category/cashback' },
   { icon: ShirtIcon, label: 'Thời trang nữ', color: 'text-pink-500', path: '/fashion' },
-  { icon: Zap, label: 'Deal sốc', color: 'text-primary', path: '/category/deal' },
+  { icon: Zap, label: 'Deal sốc', color: 'text-primary', path: '/flash-sale' },
   { icon: Ticket, label: 'Voucher', color: 'text-blue-500', path: '/products' },
   { icon: Gift, label: 'Quà tặng', color: 'text-purple-500', path: '/category/gift' },
   { icon: Tag, label: 'Đang giảm giá', color: 'text-red-500', path: '/category/sale' },
