@@ -17,6 +17,7 @@ import ProductsPage from "./pages/ProductsPage";
 import CategoryProductsPage from "./pages/CategoryProductsPage";
 import FashionCategoryPage from "./pages/FashionCategoryPage";
 import FlashSalePage from "./pages/FlashSalePage";
+import VoucherPage from "./pages/VoucherPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -55,6 +56,7 @@ const App = () => (
                   <Route path="/category/:slug" element={<UserLayout><CategoryProductsPage /></UserLayout>} />
                   <Route path="/fashion" element={<UserLayout><FashionCategoryPage /></UserLayout>} />
                   <Route path="/flash-sale" element={<UserLayout><FlashSalePage /></UserLayout>} />
+                  <Route path="/voucher" element={<UserLayout><VoucherPage /></UserLayout>} />
                   <Route path="/product/:id" element={<UserLayout><ProductDetailPage /></UserLayout>} />
                   <Route path="/cart" element={<UserLayout><CartPage /></UserLayout>} />
                   <Route path="/checkout" element={<UserLayout><CheckoutPage /></UserLayout>} />
