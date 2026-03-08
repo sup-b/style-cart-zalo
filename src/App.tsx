@@ -15,6 +15,7 @@ import AdminLayout from "@/components/AdminLayout";
 
 import HomePage from "./pages/HomePage";
 import ProductsPage from "./pages/ProductsPage";
+import CategoryPage from "./pages/CategoryPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -50,6 +51,12 @@ const App = () => (
                   <Route path="/products" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <ProductsPage />
+                      <BottomNav />
+                    </div>
+                  } />
+                  <Route path="/categories" element={
+                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                      <CategoryPage />
                       <BottomNav />
                     </div>
                   } />
