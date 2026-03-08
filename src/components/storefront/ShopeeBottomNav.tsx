@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 const tabs = [
   { path: '/', icon: Home, label: 'Trang chủ' },
   { path: '/products', icon: Grid3X3, label: 'Danh mục' },
-  { path: '/live', icon: Radio, label: 'Live' },
   { path: '/notifications', icon: Bell, label: 'Thông báo', badge: 5 },
   { path: '/profile', icon: User, label: 'Tôi' },
 ];
