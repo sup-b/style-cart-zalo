@@ -16,6 +16,7 @@ import HomePage from "./pages/HomePage";
 import ProductsPage from "./pages/ProductsPage";
 import CategoryProductsPage from "./pages/CategoryProductsPage";
 import FashionCategoryPage from "./pages/FashionCategoryPage";
+import FlashSalePage from "./pages/FlashSalePage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
