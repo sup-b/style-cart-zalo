@@ -1,6 +1,6 @@
 import StickyHeader from '@/components/StickyHeader';
 import HeroSlider from '@/components/HeroSlider';
-import CategoryScroll from '@/components/CategoryScroll';
+import HomeCategoryMenu from '@/components/HomeCategoryMenu';
 import HotDrops from '@/components/HotDrops';
 import ProductFeed from '@/components/ProductFeed';
 
@@ -9,7 +9,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-background pb-20">
       <StickyHeader />
       <HeroSlider />
-      <CategoryScroll />
+      <HomeCategoryMenu />
       <HotDrops />
 
       {/* Divider */}
