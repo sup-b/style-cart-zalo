@@ -58,6 +58,12 @@ const App = () => (
                       <BottomNav />
                     </div>
                   } />
+                  <Route path="/collection/:type" element={
+                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                      <CollectionPage />
+                      <BottomNav />
+                    </div>
+                  } />
                   <Route path="/products" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <ProductsPage />
