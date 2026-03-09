@@ -6,6 +6,7 @@ import type { LucideIcon } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { mockProducts, filterByTag } from '@/data/mockData';
 import ProductGrid from '@/components/ProductGrid';
+import ProductFilter, { applyFilters, type ProductFilters } from '@/components/ProductFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 
 type CategoryLink = {
@@ -37,6 +38,7 @@ const mockCategoryMap: Record<string, string> = {
 export default function CategoryPage() {
   const [activeCategory, setActiveCategory] = useState<string>('ao');
   const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState<ProductFilters>({ priceRange: 'all', sizes: [], colors: [] });
   const { data: dbProducts = [], isLoading } = useProducts();
 
   const activeCat = categoryLinks.find(c => c.id === activeCategory);
@@ -81,10 +83,20 @@ export default function CategoryPage() {
     return [];
   };
 
-  const dbFiltered = getDbProducts();
-  const mockFiltered = getMockProducts();
+  const dbFiltered = useMemo(() => applyFilters(getDbProducts(), filters), [dbProducts, activeCategory, filters]);
+  const mockFiltered = useMemo(() => {
+    const base = getMockProducts();
+    // Apply filters to mock products (adapt structure)
+    return applyFilters(base.map(p => ({ ...p, sizes: [], colors: [] })), filters);
+  }, [activeCategory, filters]);
   const usesMock = activeCat?.type === 'tag' || activeCat?.type === 'sale' ||
     (activeCat?.type === 'category' && ['Túi xách', 'Trang sức'].includes(activeCat.value));
+
+  // Reset filters when category changes
+  const handleCategoryChange = (id: string) => {
+    setActiveCategory(id);
+    setFilters({ priceRange: 'all', sizes: [], colors: [] });
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -119,7 +131,7 @@ export default function CategoryPage() {
             return (
               <button
                 key={id}
-                onClick={() => setActiveCategory(id)}
+                onClick={() => handleCategoryChange(id)}
                 className="flex flex-col items-center gap-1.5 transition-transform active:scale-95"
               >
                 <div className={`flex h-14 w-14 items-center justify-center rounded-full transition-colors ${
@@ -143,8 +155,19 @@ export default function CategoryPage() {
         </div>
       </div>
 
-      {/* Divider */}
-      {!isSearching && <div className="mx-4 border-t border-border" />}
+      {/* Filter bar + Divider */}
+      {!isSearching && (
+        <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+          <ProductFilter
+            filters={filters}
+            onFiltersChange={setFilters}
+            activeCount={usesMock ? mockFiltered.length : dbFiltered.length}
+          />
+          <span className="font-body text-xs text-muted-foreground">
+            {usesMock ? mockFiltered.length : dbFiltered.length} sản phẩm
+          </span>
+        </div>
+      )}
 
       {/* Search Results or Filtered Products */}
       <div className="pt-4">
