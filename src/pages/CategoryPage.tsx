@@ -6,6 +6,7 @@ import type { LucideIcon } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { mockProducts, filterByTag } from '@/data/mockData';
 import ProductGrid from '@/components/ProductGrid';
+import ProductFilter, { applyFilters, type ProductFilters } from '@/components/ProductFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 
 type CategoryLink = {
