@@ -25,7 +25,7 @@ const menuItems = [
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const { user, profile, isLoggedIn, loading, signOut } = useAuth();
+  const { user, profile, mockUser, isLoggedIn, loading, signOut } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
 
   const handleMenuClick = (item: typeof menuItems[0]) => {
@@ -58,37 +58,23 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-muted/30 pb-20">
       {/* Section 1: User Info Header */}
       <div className="bg-gradient-to-br from-foreground to-foreground/80 px-6 pb-8 pt-12 text-background">
-        {isLoggedIn ? (
-          <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16 border-2 border-background/20">
-              <AvatarFallback className="bg-background/10 text-background text-xl font-display">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="font-display text-lg font-semibold">{displayName}</h1>
-              <p className="text-xs text-background/70 font-body">{user?.email}</p>
-              <Badge variant="secondary" className="mt-1 bg-background/15 text-background border-none text-[10px] uppercase tracking-widest">
-                Thành viên Bạc
-              </Badge>
-            </div>
+        <div className="flex items-center gap-4">
+          <Avatar className="h-16 w-16 border-2 border-background/20">
+            <AvatarFallback className="bg-background/10 text-background text-xl font-display">
+              {mockUser ? mockUser.name.slice(0, 2).toUpperCase() : initials}
+            </AvatarFallback>
+            {(mockUser?.avatar || profile?.avatar_url) && (
+              <img src={mockUser?.avatar || profile?.avatar_url || ''} alt="Avatar" className="h-full w-full object-cover" />
+            )}
+          </Avatar>
+          <div>
+            <h1 className="font-display text-lg font-semibold">{mockUser ? mockUser.name : displayName}</h1>
+            <p className="text-xs text-background/70 font-body">{mockUser ? 'Zalo User' : user?.email}</p>
+            <Badge variant="secondary" className="mt-1 bg-background/15 text-background border-none text-[10px] uppercase tracking-widest">
+              Thành viên Bạc
+            </Badge>
           </div>
-        ) : (
-          <div className="flex flex-col items-center gap-3 py-4">
-            <Avatar className="h-16 w-16 border-2 border-background/20">
-              <AvatarFallback className="bg-background/10 text-background text-xl font-display">
-                ?
-              </AvatarFallback>
-            </Avatar>
-            <p className="font-body text-sm text-background/70">Bạn chưa đăng nhập</p>
-            <button
-              onClick={() => setAuthOpen(true)}
-              className="rounded-full bg-background px-6 py-2 font-body text-xs font-semibold uppercase tracking-widest text-foreground transition-opacity hover:opacity-90"
-            >
-              Đăng nhập / Đăng ký
-            </button>
-          </div>
-        )}
+        </div>
       </div>
 
       {/* Section 2: Order Tracking */}

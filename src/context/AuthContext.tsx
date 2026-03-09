@@ -13,10 +13,18 @@ type Profile = {
   avatar_url: string | null;
 };
 
+type MockUser = {
+  id: string;
+  name: string;
+  avatar: string;
+  role: UserRole;
+};
+
 type AuthContextType = {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
+  mockUser: MockUser | null;
   isLoggedIn: boolean;
   userRole: UserRole;
   setUserRole: (role: UserRole) => void;
@@ -24,6 +32,8 @@ type AuthContextType = {
   loading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  mockZaloLogin: () => Promise<MockUser>;
+  mockZaloLogout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,6 +42,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [mockUser, setMockUser] = useState<MockUser | null>(() => {
+    try {
+      const stored = localStorage.getItem('mockUser');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
   const [userRole, setUserRole] = useState<UserRole>('user');
   const [loading, setLoading] = useState(true);
 
@@ -48,6 +66,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (user) {
       await fetchProfile(user.id);
     }
+  };
+
+  // Mock Zalo login function
+  const mockZaloLogin = async (): Promise<MockUser> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const mockUserData: MockUser = {
+          id: 'z12345',
+          name: 'Zalo User',
+          avatar: 'https://i.pravatar.cc/150?u=zalo',
+          role: 'user',
+        };
+        setMockUser(mockUserData);
+        localStorage.setItem('mockUser', JSON.stringify(mockUserData));
+        resolve(mockUserData);
+      }, 1500);
+    });
+  };
+
+  const mockZaloLogout = () => {
+    setMockUser(null);
+    localStorage.removeItem('mockUser');
   };
 
   useEffect(() => {
@@ -83,9 +123,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     await supabase.auth.signOut();
     setProfile(null);
+    mockZaloLogout();
   };
 
-  const isLoggedIn = !!user;
+  const isLoggedIn = !!user || !!mockUser;
   const isAdmin = isLoggedIn && userRole === 'admin';
 
   return (
@@ -93,6 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user,
       session,
       profile,
+      mockUser,
       isLoggedIn,
       userRole,
       setUserRole,
@@ -100,6 +142,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       loading,
       signOut,
       refreshProfile,
+      mockZaloLogin,
+      mockZaloLogout,
     }}>
       {children}
     </AuthContext.Provider>
