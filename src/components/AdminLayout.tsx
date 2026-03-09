@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 const navItems = [
   { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Tổng quan' },
+  { path: '/admin/products', icon: Package, label: 'Sản phẩm' },
   { path: '/admin/orders', icon: ClipboardList, label: 'Đơn hàng' },
   { path: '/admin/inventory', icon: Package, label: 'Kho hàng' },
   { path: '/admin/reports', icon: BarChart3, label: 'Báo cáo' },
