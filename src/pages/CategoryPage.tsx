@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { formatPrice } from '@/data/products';
-import { Shirt, Briefcase, Sparkles, Watch, ShoppingBag, Tag, Gem, Heart, Search, X } from 'lucide-react';
+import { Shirt, Briefcase, Sparkles, Watch, ShoppingBag, Tag, Gem, Heart, Search, X, ArrowUpDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
@@ -39,6 +39,7 @@ export default function CategoryPage() {
   const [activeCategory, setActiveCategory] = useState<string>('ao');
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<ProductFilters>({ priceRange: 'all', sizes: [], colors: [] });
+  const [sortBy, setSortBy] = useState<string>('default');
   const { data: dbProducts = [], isLoading } = useProducts();
 
   const activeCat = categoryLinks.find(c => c.id === activeCategory);
@@ -83,20 +84,38 @@ export default function CategoryPage() {
     return [];
   };
 
-  const dbFiltered = useMemo(() => applyFilters(getDbProducts(), filters), [dbProducts, activeCategory, filters]);
+  const sortProducts = <T extends { price: number; sold?: number }>(items: T[]): T[] => {
+    const sorted = [...items];
+    switch (sortBy) {
+      case 'price-asc': return sorted.sort((a, b) => a.price - b.price);
+      case 'price-desc': return sorted.sort((a, b) => b.price - a.price);
+      case 'best-selling': return sorted.sort((a, b) => (b.sold || 0) - (a.sold || 0));
+      case 'newest': return sorted.reverse();
+      default: return sorted;
+    }
+  };
+
+  const dbFiltered = useMemo(() => sortProducts(applyFilters(getDbProducts(), filters)), [dbProducts, activeCategory, filters, sortBy]);
   const mockFiltered = useMemo(() => {
     const base = getMockProducts();
-    // Apply filters to mock products (adapt structure)
-    return applyFilters(base.map(p => ({ ...p, sizes: [], colors: [] })), filters);
-  }, [activeCategory, filters]);
+    return sortProducts(applyFilters(base.map(p => ({ ...p, sizes: [], colors: [] })), filters));
+  }, [activeCategory, filters, sortBy]);
   const usesMock = activeCat?.type === 'tag' || activeCat?.type === 'sale' ||
     (activeCat?.type === 'category' && ['Túi xách', 'Trang sức'].includes(activeCat.value));
 
-  // Reset filters when category changes
   const handleCategoryChange = (id: string) => {
     setActiveCategory(id);
     setFilters({ priceRange: 'all', sizes: [], colors: [] });
+    setSortBy('default');
   };
+
+  const SORT_OPTIONS = [
+    { id: 'default', label: 'Mặc định' },
+    { id: 'price-asc', label: 'Giá tăng dần' },
+    { id: 'price-desc', label: 'Giá giảm dần' },
+    { id: 'newest', label: 'Mới nhất' },
+    { id: 'best-selling', label: 'Bán chạy' },
+  ];
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -157,15 +176,30 @@ export default function CategoryPage() {
 
       {/* Filter bar + Divider */}
       {!isSearching && (
-        <div className="flex items-center justify-between px-4 py-2 border-b border-border">
-          <ProductFilter
-            filters={filters}
-            onFiltersChange={setFilters}
-            activeCount={usesMock ? mockFiltered.length : dbFiltered.length}
-          />
-          <span className="font-body text-xs text-muted-foreground">
-            {usesMock ? mockFiltered.length : dbFiltered.length} sản phẩm
-          </span>
+        <div className="space-y-0">
+          <div className="flex items-center gap-2 px-4 py-2 border-b border-border">
+            <ProductFilter
+              filters={filters}
+              onFiltersChange={setFilters}
+              activeCount={usesMock ? mockFiltered.length : dbFiltered.length}
+            />
+            {/* Sort dropdown */}
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+                className="appearance-none rounded-full bg-secondary pl-3 pr-8 py-1.5 font-body text-xs focus:outline-none focus:ring-1 focus:ring-foreground/20 cursor-pointer"
+              >
+                {SORT_OPTIONS.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.label}</option>
+                ))}
+              </select>
+              <ArrowUpDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
+            </div>
+            <span className="ml-auto font-body text-xs text-muted-foreground">
+              {usesMock ? mockFiltered.length : dbFiltered.length}
+            </span>
+          </div>
         </div>
       )}
 
