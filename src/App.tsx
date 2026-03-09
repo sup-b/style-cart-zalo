@@ -29,6 +29,11 @@ import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 import AdminProductsPage from "./pages/admin/AdminProductsPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import AdminReportsPage from "./pages/admin/AdminReportsPage";
+import OrdersByStatusPage from "./pages/OrdersByStatusPage";
+import OrderHistoryPage from "./pages/OrderHistoryPage";
+import AccountInfoPage from "./pages/AccountInfoPage";
+import PaymentMethodsPage from "./pages/PaymentMethodsPage";
+import AppSettingsPage from "./pages/AppSettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -96,6 +101,46 @@ const App = () => (
                     <ProtectedRoute>
                       <div className="mx-auto max-w-md min-h-screen bg-background relative">
                         <ProfilePage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/orders/:status" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <OrdersByStatusPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/order-history" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <OrderHistoryPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/account-info" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <AccountInfoPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/payment-methods" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <PaymentMethodsPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/settings" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <AppSettingsPage />
                         <BottomNav />
                       </div>
                     </ProtectedRoute>
