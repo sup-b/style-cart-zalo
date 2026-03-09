@@ -1,6 +1,12 @@
-import { products, formatPrice } from '@/data/products';
+import { formatPrice } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminInventoryPage() {
+  const { data: products = [], isLoading } = useProducts();
+
+  if (isLoading) return <div className="space-y-4"><Skeleton className="h-8 w-48" /><Skeleton className="h-40 w-full" /></div>;
+
   return (
     <div className="space-y-4 animate-fade-in">
       <h1 className="font-display text-2xl font-semibold">Quản lý kho hàng</h1>

@@ -1,5 +1,7 @@
-import { useOrders, OrderStatus } from '@/context/OrderContext';
 import { formatPrice } from '@/data/products';
+import { useDbOrders, useUpdateOrderStatus, useUpdateShippingNote } from '@/hooks/useOrders';
+import type { OrderStatus } from '@/context/OrderContext';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const statusLabels: Record<OrderStatus, string> = {
   pending: 'Chờ xác nhận', confirmed: 'Đã xác nhận', shipping: 'Đang giao', delivered: 'Đã giao', cancelled: 'Đã hủy',
@@ -9,16 +11,18 @@ const statusColors: Record<OrderStatus, string> = {
 };
 
 export default function AdminOrdersPage() {
-  const { orders, updateOrderStatus, updateShippingNote } = useOrders();
-  const sorted = [...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const { data: orders = [], isLoading } = useDbOrders();
+  const updateStatus = useUpdateOrderStatus();
+  const updateNote = useUpdateShippingNote();
 
-  if (sorted.length === 0) return <div className="py-20 text-center font-body text-sm text-muted-foreground">Chưa có đơn hàng nào</div>;
+  if (isLoading) return <div className="space-y-4"><Skeleton className="h-8 w-48" /><Skeleton className="h-40 w-full" /></div>;
+  if (orders.length === 0) return <div className="py-20 text-center font-body text-sm text-muted-foreground">Chưa có đơn hàng nào</div>;
 
   return (
     <div className="space-y-4 animate-fade-in">
       <h1 className="font-display text-2xl font-semibold">Quản lý đơn hàng</h1>
       <div className="space-y-3">
-        {sorted.map(order => (
+        {orders.map(order => (
           <div key={order.id} className="rounded-sm border border-border bg-card p-4 space-y-3">
             <div className="flex items-start justify-between">
               <div>
@@ -46,12 +50,12 @@ export default function AdminOrdersPage() {
             </div>
             <div className="flex items-center justify-between border-t border-border pt-2">
               <span className="font-body text-xs font-bold">Tổng: {formatPrice(order.total)}</span>
-              <select value={order.status} onChange={e => updateOrderStatus(order.id, e.target.value as OrderStatus)}
+              <select value={order.status} onChange={e => updateStatus.mutate({ orderCode: order.id, status: e.target.value as OrderStatus })}
                 className="border border-border bg-background px-2 py-1 font-body text-xs focus:outline-none">
                 {Object.entries(statusLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </div>
-            <input value={order.shippingNote} onChange={e => updateShippingNote(order.id, e.target.value)}
+            <input value={order.shippingNote} onChange={e => updateNote.mutate({ orderCode: order.id, note: e.target.value })}
               placeholder="Ghi chú vận chuyển..."
               className="w-full border border-border bg-background px-3 py-2 font-body text-xs focus:outline-none focus:ring-1 focus:ring-foreground" />
           </div>

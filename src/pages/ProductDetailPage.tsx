@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { products, formatPrice } from '@/data/products';
+import { formatPrice } from '@/data/products';
 import { useState } from 'react';
 import ImageCarousel from '@/components/ImageCarousel';
 import SizeGuideDialog from '@/components/SizeGuideDialog';
@@ -7,17 +7,29 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { ArrowLeft, Heart, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { toast } from 'sonner';
+import { useProduct } from '@/hooks/useProducts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const product = products.find(p => p.id === id);
+  const { data: product, isLoading } = useProduct(id);
   const { addItem } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
 
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background pb-24 space-y-4 p-4">
+        <Skeleton className="aspect-square w-full rounded-lg" />
+        <Skeleton className="h-8 w-3/4" />
+        <Skeleton className="h-6 w-1/3" />
+      </div>
+    );
+  }
 
   if (!product) return <div className="flex min-h-screen items-center justify-center font-body text-muted-foreground">Sản phẩm không tồn tại</div>;
 
@@ -34,7 +46,6 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
       <div className="sticky top-0 z-40 flex items-center justify-between bg-background/95 px-4 py-3 backdrop-blur-md">
         <button onClick={() => navigate(-1)}><ArrowLeft className="h-5 w-5" /></button>
         <button onClick={() => toggleWishlist(product.id)}>
@@ -55,20 +66,17 @@ export default function ProductDetailPage() {
           <p className="mt-1 font-body text-xs text-muted-foreground">Đã bán {product.sold}+</p>
         </div>
 
-        {/* Color Selector */}
         <div>
           <h3 className="mb-2 font-body text-xs font-semibold uppercase tracking-widest">Màu sắc {selectedColor && `— ${selectedColor}`}</h3>
           <div className="flex gap-2">
             {product.colors.map(c => (
               <button key={c.name} onClick={() => setSelectedColor(c.name)}
                 className={`h-8 w-8 rounded-full border-2 transition-all ${selectedColor === c.name ? 'border-foreground scale-110' : 'border-transparent'}`}
-                style={{ backgroundColor: c.hex }}
-                aria-label={c.name} />
+                style={{ backgroundColor: c.hex }} aria-label={c.name} />
             ))}
           </div>
         </div>
 
-        {/* Size Selector */}
         <div>
           <div className="mb-2 flex items-center justify-between">
             <h3 className="font-body text-xs font-semibold uppercase tracking-widest">Kích cỡ {selectedSize && `— ${selectedSize}`}</h3>
@@ -82,16 +90,13 @@ export default function ProductDetailPage() {
                 <button key={s} onClick={() => !outOfStock && setSelectedSize(s)}
                   className={`flex h-10 w-14 items-center justify-center border text-sm font-body font-medium transition-all
                     ${selectedSize === s ? 'border-foreground bg-foreground text-background' : 'border-border'}
-                    ${outOfStock ? 'opacity-30 cursor-not-allowed line-through' : ''}`}>
-                  {s}
-                </button>
+                    ${outOfStock ? 'opacity-30 cursor-not-allowed line-through' : ''}`}>{s}</button>
               );
             })}
           </div>
           {variant && <p className="mt-1 text-xs text-muted-foreground font-body">Còn {variant.stock} sản phẩm</p>}
         </div>
 
-        {/* Quantity */}
         <div>
           <h3 className="mb-2 font-body text-xs font-semibold uppercase tracking-widest">Số lượng</h3>
           <div className="flex items-center gap-3">
@@ -101,14 +106,12 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Description */}
         <div className="space-y-2 border-t border-border pt-5">
           <p className="font-body text-sm leading-relaxed text-muted-foreground">{product.description}</p>
           <p className="font-body text-xs text-muted-foreground">Chất liệu: {product.material}</p>
         </div>
       </div>
 
-      {/* Fixed bottom CTA */}
       <div className="fixed bottom-16 left-0 right-0 z-40 border-t border-border bg-card/95 px-4 py-3 backdrop-blur-md">
         <button onClick={handleAddToCart}
           className="flex w-full items-center justify-center gap-2 bg-foreground py-3.5 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90 active:opacity-80">
