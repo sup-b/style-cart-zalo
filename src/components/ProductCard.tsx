@@ -2,13 +2,23 @@ import { Product, formatPrice } from '@/data/products';
 import { Heart } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export default function ProductCard({ product }: { product: Product }) {
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(product.id);
 
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product.id);
+    toast(wishlisted ? 'Đã bỏ thích' : 'Đã thêm vào yêu thích', {
+      icon: wishlisted ? '💔' : '❤️',
+    });
+  };
+
   return (
-    <div className="group animate-fade-in">
+    <div className="group animate-fade-in relative">
       <Link to={`/product/${product.id}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
           <img
@@ -25,11 +35,11 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
       <button
-        onClick={(e) => { e.preventDefault(); toggleWishlist(product.id); }}
+        onClick={handleToggleWishlist}
         className="absolute right-2 top-2 z-10 rounded-full bg-card/80 p-1.5 backdrop-blur-sm transition-colors"
         aria-label="Yêu thích"
       >
-        <Heart className={`h-4 w-4 ${wishlisted ? 'fill-foreground text-foreground' : 'text-muted-foreground'}`} />
+        <Heart className={`h-4 w-4 transition-colors ${wishlisted ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
       </button>
       <div className="mt-3 space-y-1">
         <h3 className="font-display text-sm font-medium leading-tight tracking-wide">{product.nameVi}</h3>
