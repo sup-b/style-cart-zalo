@@ -93,9 +93,16 @@ const App = () => (
                     </div>
                   } />
                   <Route path="/profile" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <ProfilePage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/login" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
-                      <ProfilePage />
-                      <BottomNav />
+                      <LoginPage />
                     </div>
                   } />
 
