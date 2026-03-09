@@ -176,15 +176,30 @@ export default function CategoryPage() {
 
       {/* Filter bar + Divider */}
       {!isSearching && (
-        <div className="flex items-center justify-between px-4 py-2 border-b border-border">
-          <ProductFilter
-            filters={filters}
-            onFiltersChange={setFilters}
-            activeCount={usesMock ? mockFiltered.length : dbFiltered.length}
-          />
-          <span className="font-body text-xs text-muted-foreground">
-            {usesMock ? mockFiltered.length : dbFiltered.length} sản phẩm
-          </span>
+        <div className="space-y-0">
+          <div className="flex items-center gap-2 px-4 py-2 border-b border-border">
+            <ProductFilter
+              filters={filters}
+              onFiltersChange={setFilters}
+              activeCount={usesMock ? mockFiltered.length : dbFiltered.length}
+            />
+            {/* Sort dropdown */}
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+                className="appearance-none rounded-full bg-secondary pl-3 pr-8 py-1.5 font-body text-xs focus:outline-none focus:ring-1 focus:ring-foreground/20 cursor-pointer"
+              >
+                {SORT_OPTIONS.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.label}</option>
+                ))}
+              </select>
+              <ArrowUpDown className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
+            </div>
+            <span className="ml-auto font-body text-xs text-muted-foreground">
+              {usesMock ? mockFiltered.length : dbFiltered.length}
+            </span>
+          </div>
         </div>
       )}
 
