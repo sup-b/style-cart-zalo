@@ -105,6 +105,46 @@ const App = () => (
                       </div>
                     </ProtectedRoute>
                   } />
+                  <Route path="/orders/:status" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <OrdersByStatusPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/order-history" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <OrderHistoryPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/account-info" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <AccountInfoPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/payment-methods" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <PaymentMethodsPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/settings" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <AppSettingsPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
                   <Route path="/login" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <LoginPage />
