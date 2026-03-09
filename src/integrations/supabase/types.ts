@@ -14,7 +14,199 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      order_items: {
+        Row: {
+          color: string
+          id: string
+          order_id: string
+          product_id: string
+          quantity: number
+          size: string
+          unit_price: number
+        }
+        Insert: {
+          color: string
+          id?: string
+          order_id: string
+          product_id: string
+          quantity: number
+          size: string
+          unit_price: number
+        }
+        Update: {
+          color?: string
+          id?: string
+          order_id?: string
+          product_id?: string
+          quantity?: number
+          size?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          address: string
+          created_at: string
+          customer_name: string
+          id: string
+          note: string
+          order_code: string
+          phone: string
+          shipping_note: string
+          status: string
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          customer_name: string
+          id?: string
+          note?: string
+          order_code: string
+          phone: string
+          shipping_note?: string
+          status?: string
+          total: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          customer_name?: string
+          id?: string
+          note?: string
+          order_code?: string
+          phone?: string
+          shipping_note?: string
+          status?: string
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      product_colors: {
+        Row: {
+          hex: string
+          id: string
+          name: string
+          product_id: string
+        }
+        Insert: {
+          hex: string
+          id?: string
+          name: string
+          product_id: string
+        }
+        Update: {
+          hex?: string
+          id?: string
+          name?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_colors_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_variants: {
+        Row: {
+          color: string
+          id: string
+          product_id: string
+          size: string
+          stock: number
+        }
+        Insert: {
+          color: string
+          id?: string
+          product_id: string
+          size: string
+          stock?: number
+        }
+        Update: {
+          color?: string
+          id?: string
+          product_id?: string
+          size?: string
+          stock?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          images: string[]
+          material: string
+          name: string
+          name_vi: string
+          original_price: number | null
+          price: number
+          sold: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string
+          id?: string
+          images?: string[]
+          material?: string
+          name?: string
+          name_vi: string
+          original_price?: number | null
+          price: number
+          sold?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          images?: string[]
+          material?: string
+          name?: string
+          name_vi?: string
+          original_price?: number | null
+          price?: number
+          sold?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
