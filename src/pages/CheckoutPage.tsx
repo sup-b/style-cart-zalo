@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
-import { useOrders } from '@/context/OrderContext';
 import { formatPrice } from '@/data/products';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useCreateOrder } from '@/hooks/useOrders';
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
-  const { addOrder } = useOrders();
+  const createOrder = useCreateOrder();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -35,7 +35,7 @@ export default function CheckoutPage() {
     return null;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !phone.trim() || !address.trim()) {
       toast.error('Vui lòng điền đầy đủ thông tin');
@@ -45,9 +45,20 @@ export default function CheckoutPage() {
       toast.error('Số điện thoại không hợp lệ');
       return;
     }
-    const id = addOrder({ items, customerName: name.trim(), phone: phone.trim(), address: address.trim(), note: note.trim(), total: totalPrice });
-    setOrderId(id);
-    clearCart();
+    try {
+      const code = await createOrder.mutateAsync({
+        items,
+        customerName: name.trim(),
+        phone: phone.trim(),
+        address: address.trim(),
+        note: note.trim(),
+        total: totalPrice,
+      });
+      setOrderId(code);
+      clearCart();
+    } catch {
+      toast.error('Có lỗi xảy ra khi đặt hàng');
+    }
   };
 
   return (
@@ -57,7 +68,6 @@ export default function CheckoutPage() {
         <h1 className="font-display text-xl">Đặt hàng</h1>
       </div>
 
-      {/* Order summary */}
       <div className="border-b border-border px-4 py-4">
         <h2 className="mb-3 font-body text-xs font-semibold uppercase tracking-widest text-muted-foreground">Đơn hàng ({items.length} sản phẩm)</h2>
         {items.map(item => (
@@ -78,7 +88,6 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4 p-4">
         <h2 className="font-body text-xs font-semibold uppercase tracking-widest text-muted-foreground">Thông tin giao hàng</h2>
         <div>
@@ -97,8 +106,9 @@ export default function CheckoutPage() {
           <label className="mb-1 block font-body text-xs text-muted-foreground">Ghi chú</label>
           <textarea value={note} onChange={e => setNote(e.target.value)} rows={2} className="w-full border border-border bg-background px-3 py-2.5 font-body text-sm focus:outline-none focus:ring-1 focus:ring-foreground" placeholder="Ghi chú cho đơn hàng (nếu có)" />
         </div>
-        <button type="submit" className="w-full bg-foreground py-3.5 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90">
-          Xác nhận đặt hàng
+        <button type="submit" disabled={createOrder.isPending}
+          className="w-full bg-foreground py-3.5 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:opacity-50">
+          {createOrder.isPending ? 'Đang xử lý...' : 'Xác nhận đặt hàng'}
         </button>
       </form>
     </div>

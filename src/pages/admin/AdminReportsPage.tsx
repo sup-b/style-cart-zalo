@@ -1,6 +1,11 @@
-import { products } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminReportsPage() {
+  const { data: products = [], isLoading } = useProducts();
+
+  if (isLoading) return <div className="space-y-4"><Skeleton className="h-8 w-48" /><Skeleton className="h-40 w-full" /></div>;
+
   const bestSellers = [...products].sort((a, b) => b.sold - a.sold);
   const maxSold = bestSellers[0]?.sold || 1;
 
