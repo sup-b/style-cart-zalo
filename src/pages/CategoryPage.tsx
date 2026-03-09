@@ -144,11 +144,51 @@ export default function CategoryPage() {
       </div>
 
       {/* Divider */}
-      <div className="mx-4 border-t border-border" />
+      {!isSearching && <div className="mx-4 border-t border-border" />}
 
-      {/* Filtered Products */}
+      {/* Search Results or Filtered Products */}
       <div className="pt-4">
-        {isLoading && !usesMock ? (
+        {isSearching ? (
+          <>
+            {searchResults.db.length === 0 && searchResults.mock.length === 0 ? (
+              <div className="py-16 text-center">
+                <Search className="mx-auto h-10 w-10 text-muted-foreground/30 mb-3" />
+                <p className="font-body text-sm text-muted-foreground">Không tìm thấy sản phẩm nào cho "{searchQuery}"</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {searchResults.db.length > 0 && (
+                  <div className="space-y-3 px-4">
+                    <h2 className="font-display text-sm font-semibold text-muted-foreground">
+                      Kết quả ({searchResults.db.length + searchResults.mock.length})
+                    </h2>
+                    <div className="grid grid-cols-2 gap-3">
+                      {searchResults.db.map(p => (
+                        <Link key={p.id} to={`/product/${p.id}`} className="group animate-fade-in">
+                          <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
+                            <img src={p.images[0]} alt={p.nameVi} className="h-full w-full object-cover" loading="lazy" />
+                            {p.originalPrice && (
+                              <span className="absolute left-2 top-2 rounded-full bg-destructive px-2 py-0.5 font-body text-[9px] font-bold text-destructive-foreground">
+                                -{Math.round((1 - p.price / p.originalPrice) * 100)}%
+                              </span>
+                            )}
+                          </div>
+                          <div className="mt-2.5 space-y-1">
+                            <p className="truncate font-body text-xs font-medium">{p.nameVi}</p>
+                            <span className="font-body text-sm font-bold">{formatPrice(p.price)}</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {searchResults.mock.length > 0 && (
+                  <ProductGrid products={searchResults.mock} />
+                )}
+              </div>
+            )}
+          </>
+        ) : (
           <div className="grid grid-cols-2 gap-3 px-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="aspect-[3/4] rounded-xl" />
