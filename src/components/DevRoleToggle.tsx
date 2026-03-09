@@ -2,7 +2,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Shield, User } from 'lucide-react';
 
 export default function DevRoleToggle() {
-  const { isLoggedIn, userRole, setUserRole, signOut } = useAuth();
+  const { isLoggedIn, userRole, setUserRole } = useAuth();
 
   const toggle = () => {
     if (!isLoggedIn) {

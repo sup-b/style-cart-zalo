@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Loader2 } from 'lucide-react';
@@ -12,12 +12,12 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // If already logged in, set admin role and redirect
-  if (isLoggedIn) {
-    setUserRole('admin');
-    navigate('/admin/dashboard', { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (isLoggedIn) {
+      setUserRole('admin');
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [isLoggedIn, navigate, setUserRole]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
