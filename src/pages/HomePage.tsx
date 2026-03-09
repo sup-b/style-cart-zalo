@@ -1,6 +1,6 @@
 import StickyHeader from '@/components/StickyHeader';
 import HeroSlider from '@/components/HeroSlider';
-import HomeCategoryMenu from '@/components/HomeCategoryMenu';
+import QuickLinksMenu from '@/components/QuickLinksMenu';
 import HotDrops from '@/components/HotDrops';
 import ProductFeed from '@/components/ProductFeed';
 
