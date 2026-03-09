@@ -29,6 +29,11 @@ import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 import AdminProductsPage from "./pages/admin/AdminProductsPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import AdminReportsPage from "./pages/admin/AdminReportsPage";
+import OrdersByStatusPage from "./pages/OrdersByStatusPage";
+import OrderHistoryPage from "./pages/OrderHistoryPage";
+import AccountInfoPage from "./pages/AccountInfoPage";
+import PaymentMethodsPage from "./pages/PaymentMethodsPage";
+import AppSettingsPage from "./pages/AppSettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
