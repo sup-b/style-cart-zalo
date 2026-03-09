@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { formatPrice } from '@/data/products';
-import { Shirt, Briefcase, Sparkles, Watch, ShoppingBag, Tag, Gem, Heart } from 'lucide-react';
+import { Shirt, Briefcase, Sparkles, Watch, ShoppingBag, Tag, Gem, Heart, Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
@@ -36,9 +36,25 @@ const mockCategoryMap: Record<string, string> = {
 
 export default function CategoryPage() {
   const [activeCategory, setActiveCategory] = useState<string>('ao');
+  const [searchQuery, setSearchQuery] = useState('');
   const { data: dbProducts = [], isLoading } = useProducts();
 
   const activeCat = categoryLinks.find(c => c.id === activeCategory);
+
+  // Search across all products
+  const isSearching = searchQuery.trim().length > 0;
+  const searchResults = useMemo(() => {
+    if (!isSearching) return { db: [], mock: [] };
+    const q = searchQuery.toLowerCase().trim();
+    return {
+      db: dbProducts.filter(p =>
+        p.nameVi.toLowerCase().includes(q) ||
+        p.name.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q)
+      ),
+      mock: mockProducts.filter(p => p.name.toLowerCase().includes(q)),
+    };
+  }, [searchQuery, dbProducts, isSearching]);
 
   // Get filtered DB products for category types
   const getDbProducts = () => {
@@ -72,9 +88,27 @@ export default function CategoryPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md px-4 py-3">
+      {/* Header + Search */}
+      <div className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md px-4 py-3 space-y-3">
         <h1 className="font-display text-xl font-semibold">Danh mục</h1>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.5} />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Tìm kiếm sản phẩm..."
+            className="w-full rounded-full bg-secondary/70 py-2.5 pl-10 pr-10 font-body text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-foreground/20"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-muted-foreground/20"
+            >
+              <X className="h-3 w-3 text-foreground" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Category Grid */}
@@ -110,11 +144,51 @@ export default function CategoryPage() {
       </div>
 
       {/* Divider */}
-      <div className="mx-4 border-t border-border" />
+      {!isSearching && <div className="mx-4 border-t border-border" />}
 
-      {/* Filtered Products */}
+      {/* Search Results or Filtered Products */}
       <div className="pt-4">
-        {isLoading && !usesMock ? (
+        {isSearching ? (
+          <>
+            {searchResults.db.length === 0 && searchResults.mock.length === 0 ? (
+              <div className="py-16 text-center">
+                <Search className="mx-auto h-10 w-10 text-muted-foreground/30 mb-3" />
+                <p className="font-body text-sm text-muted-foreground">Không tìm thấy sản phẩm nào cho "{searchQuery}"</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {searchResults.db.length > 0 && (
+                  <div className="space-y-3 px-4">
+                    <h2 className="font-display text-sm font-semibold text-muted-foreground">
+                      Kết quả ({searchResults.db.length + searchResults.mock.length})
+                    </h2>
+                    <div className="grid grid-cols-2 gap-3">
+                      {searchResults.db.map(p => (
+                        <Link key={p.id} to={`/product/${p.id}`} className="group animate-fade-in">
+                          <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
+                            <img src={p.images[0]} alt={p.nameVi} className="h-full w-full object-cover" loading="lazy" />
+                            {p.originalPrice && (
+                              <span className="absolute left-2 top-2 rounded-full bg-destructive px-2 py-0.5 font-body text-[9px] font-bold text-destructive-foreground">
+                                -{Math.round((1 - p.price / p.originalPrice) * 100)}%
+                              </span>
+                            )}
+                          </div>
+                          <div className="mt-2.5 space-y-1">
+                            <p className="truncate font-body text-xs font-medium">{p.nameVi}</p>
+                            <span className="font-body text-sm font-bold">{formatPrice(p.price)}</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {searchResults.mock.length > 0 && (
+                  <ProductGrid products={searchResults.mock} />
+                )}
+              </div>
+            )}
+          </>
+        ) : isLoading && !usesMock ? (
           <div className="grid grid-cols-2 gap-3 px-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="aspect-[3/4] rounded-xl" />
@@ -143,12 +217,7 @@ export default function CategoryPage() {
                 {dbFiltered.map(p => (
                   <Link key={p.id} to={`/product/${p.id}`} className="group animate-fade-in">
                     <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
-                      <img
-                        src={p.images[0]}
-                        alt={p.nameVi}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                      />
+                      <img src={p.images[0]} alt={p.nameVi} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                       {p.originalPrice && (
                         <span className="absolute left-2 top-2 rounded-full bg-destructive px-2 py-0.5 font-body text-[9px] font-bold text-destructive-foreground">
                           -{Math.round((1 - p.price / p.originalPrice) * 100)}%
@@ -160,9 +229,7 @@ export default function CategoryPage() {
                       <div className="flex items-center gap-2">
                         <span className="font-body text-sm font-bold">{formatPrice(p.price)}</span>
                         {p.originalPrice && (
-                          <span className="font-body text-[11px] text-muted-foreground line-through">
-                            {formatPrice(p.originalPrice)}
-                          </span>
+                          <span className="font-body text-[11px] text-muted-foreground line-through">{formatPrice(p.originalPrice)}</span>
                         )}
                       </div>
                       <div className="flex gap-1">
