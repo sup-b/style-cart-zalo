@@ -71,16 +71,20 @@ const App = () => (
                     </div>
                   } />
                   <Route path="/cart" element={
-                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
-                      <CartPage />
-                      <BottomNav />
-                    </div>
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <CartPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
                   } />
                   <Route path="/checkout" element={
-                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
-                      <CheckoutPage />
-                      <BottomNav />
-                    </div>
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <CheckoutPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
                   } />
                   <Route path="/wishlist" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
