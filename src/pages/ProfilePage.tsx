@@ -103,8 +103,8 @@ export default function ProfilePage() {
           onClick={() => toast('Tính năng đang được phát triển', { icon: '🚧' })}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-card py-3.5 shadow-sm transition-colors active:bg-muted/50"
         >
-          <LogOut className="h-4 w-4 text-red-500" />
-          <span className="font-body text-sm font-medium text-red-500">Đăng xuất</span>
+          <LogOut className="h-4 w-4 text-destructive" />
+          <span className="font-body text-sm font-medium text-destructive">Đăng xuất</span>
         </button>
       </div>
     </div>
