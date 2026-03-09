@@ -11,6 +11,7 @@ import BottomNav from "@/components/BottomNav";
 import ZaloChatButton from "@/components/ZaloChatButton";
 import DevRoleToggle from "@/components/DevRoleToggle";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import AdminLayout from "@/components/AdminLayout";
 
 import HomePage from "./pages/HomePage";
@@ -21,6 +22,7 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import WishlistPage from "./pages/WishlistPage";
 import ProfilePage from "./pages/ProfilePage";
+import LoginPage from "./pages/LoginPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
