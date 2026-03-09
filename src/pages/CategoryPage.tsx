@@ -88,9 +88,27 @@ export default function CategoryPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md px-4 py-3">
+      {/* Header + Search */}
+      <div className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md px-4 py-3 space-y-3">
         <h1 className="font-display text-xl font-semibold">Danh mục</h1>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.5} />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Tìm kiếm sản phẩm..."
+            className="w-full rounded-full bg-secondary/70 py-2.5 pl-10 pr-10 font-body text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-foreground/20"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-muted-foreground/20"
+            >
+              <X className="h-3 w-3 text-foreground" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Category Grid */}
