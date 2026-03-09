@@ -1,6 +1,9 @@
 import { Wallet, Package, Truck, Star, Heart, User, CreditCard, Settings, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDbOrders } from '@/hooks/useOrders';
+import { useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useQueryClient } from '@tanstack/react-query';
 
 const orderStatuses = [
   { icon: Wallet, label: 'Chờ thanh toán', path: '/orders/cho-thanh-toan', dbStatus: 'pending' },
@@ -19,6 +22,25 @@ const menuItems = [
 export default function UserProfileSection() {
   const navigate = useNavigate();
   const { data: orders } = useDbOrders();
+  const queryClient = useQueryClient();
+
+  // Subscribe to realtime order changes
+  useEffect(() => {
+    const channel = supabase
+      .channel('orders-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'orders' },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['orders'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   const getCount = (dbStatus: string) => (orders || []).filter(o => o.status === dbStatus).length;
 
