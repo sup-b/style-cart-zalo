@@ -1,29 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Lock } from 'lucide-react';
+import { Lock, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function AdminLoginPage() {
-  const { setLoggedIn, setUserRole, isAdmin } = useAuth();
+  const { isLoggedIn, setUserRole } = useAuth();
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  if (isAdmin) {
-    navigate('/admin/dashboard', { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (isLoggedIn) {
+      setUserRole('admin');
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [isLoggedIn, navigate, setUserRole]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Dev mock: any non-empty password works
-    if (password.trim()) {
-      setLoggedIn(true);
+    if (!email.trim() || !password.trim()) {
+      toast.error('Vui lòng nhập email và mật khẩu');
+      return;
+    }
+
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+
+    if (error) {
+      toast.error(error.message === 'Invalid login credentials'
+        ? 'Email hoặc mật khẩu không đúng'
+        : error.message);
+    } else {
       setUserRole('admin');
       toast.success('Đăng nhập thành công');
       navigate('/admin/dashboard', { replace: true });
-    } else {
-      toast.error('Vui lòng nhập mật khẩu');
     }
   };
 
@@ -39,6 +53,13 @@ export default function AdminLoginPage() {
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Email"
+            className="w-full border border-border bg-background px-4 py-3 font-body text-sm focus:outline-none focus:ring-1 focus:ring-foreground"
+          />
+          <input
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -47,14 +68,13 @@ export default function AdminLoginPage() {
           />
           <button
             type="submit"
-            className="w-full bg-foreground py-3 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 bg-foreground py-3 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:opacity-50"
           >
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             Đăng nhập
           </button>
         </form>
-        <p className="font-body text-[10px] text-muted-foreground">
-          * Môi trường dev: nhập bất kỳ mật khẩu nào
-        </p>
       </div>
     </div>
   );

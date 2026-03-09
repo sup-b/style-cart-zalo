@@ -12,12 +12,12 @@ const navItems = [
 ];
 
 export default function AdminLayout() {
-  const { setLoggedIn, setUserRole } = useAuth();
+  const { signOut, setUserRole } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const handleLogout = () => {
-    setLoggedIn(false);
+  const handleLogout = async () => {
+    await signOut();
     setUserRole('user');
     navigate('/');
   };
