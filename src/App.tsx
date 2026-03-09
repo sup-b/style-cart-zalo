@@ -86,6 +86,12 @@ const App = () => (
                       <BottomNav />
                     </div>
                   } />
+                  <Route path="/profile" element={
+                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                      <ProfilePage />
+                      <BottomNav />
+                    </div>
+                  } />
 
                   {/* Admin routes */}
                   <Route path="/admin/login" element={<AdminLoginPage />} />
