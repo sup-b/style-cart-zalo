@@ -39,6 +39,7 @@ export default function CategoryPage() {
   const [activeCategory, setActiveCategory] = useState<string>('ao');
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<ProductFilters>({ priceRange: 'all', sizes: [], colors: [] });
+  const [sortBy, setSortBy] = useState<string>('default');
   const { data: dbProducts = [], isLoading } = useProducts();
 
   const activeCat = categoryLinks.find(c => c.id === activeCategory);
