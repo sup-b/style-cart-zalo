@@ -1,6 +1,9 @@
 import { Wallet, Package, Truck, Star, Heart, User, CreditCard, Settings, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDbOrders } from '@/hooks/useOrders';
+import { useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useQueryClient } from '@tanstack/react-query';
 
 const orderStatuses = [
   { icon: Wallet, label: 'Chờ thanh toán', path: '/orders/cho-thanh-toan', dbStatus: 'pending' },
