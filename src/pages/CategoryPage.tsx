@@ -131,7 +131,7 @@ export default function CategoryPage() {
             return (
               <button
                 key={id}
-                onClick={() => setActiveCategory(id)}
+                onClick={() => handleCategoryChange(id)}
                 className="flex flex-col items-center gap-1.5 transition-transform active:scale-95"
               >
                 <div className={`flex h-14 w-14 items-center justify-center rounded-full transition-colors ${
