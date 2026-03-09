@@ -22,7 +22,7 @@ export default function DevRoleToggle() {
   return (
     <button
       onClick={toggle}
-      className="fixed left-3 top-3 z-[100] flex items-center gap-1.5 rounded-full border border-border bg-card/95 px-3 py-1.5 font-body text-[10px] font-semibold uppercase tracking-wider shadow-lg backdrop-blur-md transition-all hover:scale-105 active:scale-95"
+      className="fixed bottom-20 right-3 z-[100] flex items-center gap-1.5 rounded-full border border-border bg-card/95 px-3 py-1.5 font-body text-[10px] font-semibold uppercase tracking-wider shadow-lg backdrop-blur-md transition-all hover:scale-105 active:scale-95"
       title="DEV: Chuyển vai trò (Guest → Admin → User → Guest)"
     >
       <Icon className="h-3 w-3" />
