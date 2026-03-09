@@ -22,6 +22,25 @@ const menuItems = [
 export default function UserProfileSection() {
   const navigate = useNavigate();
   const { data: orders } = useDbOrders();
+  const queryClient = useQueryClient();
+
+  // Subscribe to realtime order changes
+  useEffect(() => {
+    const channel = supabase
+      .channel('orders-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'orders' },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['orders'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   const getCount = (dbStatus: string) => (orders || []).filter(o => o.status === dbStatus).length;
 
