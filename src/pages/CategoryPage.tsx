@@ -188,7 +188,7 @@ export default function CategoryPage() {
               </div>
             )}
           </>
-        ) : (
+        ) : isLoading && !usesMock ? (
           <div className="grid grid-cols-2 gap-3 px-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="aspect-[3/4] rounded-xl" />
@@ -217,12 +217,7 @@ export default function CategoryPage() {
                 {dbFiltered.map(p => (
                   <Link key={p.id} to={`/product/${p.id}`} className="group animate-fade-in">
                     <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
-                      <img
-                        src={p.images[0]}
-                        alt={p.nameVi}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                      />
+                      <img src={p.images[0]} alt={p.nameVi} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                       {p.originalPrice && (
                         <span className="absolute left-2 top-2 rounded-full bg-destructive px-2 py-0.5 font-body text-[9px] font-bold text-destructive-foreground">
                           -{Math.round((1 - p.price / p.originalPrice) * 100)}%
@@ -234,9 +229,7 @@ export default function CategoryPage() {
                       <div className="flex items-center gap-2">
                         <span className="font-body text-sm font-bold">{formatPrice(p.price)}</span>
                         {p.originalPrice && (
-                          <span className="font-body text-[11px] text-muted-foreground line-through">
-                            {formatPrice(p.originalPrice)}
-                          </span>
+                          <span className="font-body text-[11px] text-muted-foreground line-through">{formatPrice(p.originalPrice)}</span>
                         )}
                       </div>
                       <div className="flex gap-1">
