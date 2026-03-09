@@ -23,6 +23,7 @@ import WishlistPage from "./pages/WishlistPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
+import AdminProductsPage from "./pages/admin/AdminProductsPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import AdminReportsPage from "./pages/admin/AdminReportsPage";
 import NotFound from "./pages/NotFound";
