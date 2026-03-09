@@ -83,10 +83,20 @@ export default function CategoryPage() {
     return [];
   };
 
-  const dbFiltered = getDbProducts();
-  const mockFiltered = getMockProducts();
+  const dbFiltered = useMemo(() => applyFilters(getDbProducts(), filters), [dbProducts, activeCategory, filters]);
+  const mockFiltered = useMemo(() => {
+    const base = getMockProducts();
+    // Apply filters to mock products (adapt structure)
+    return applyFilters(base.map(p => ({ ...p, sizes: [], colors: [] })), filters);
+  }, [activeCategory, filters]);
   const usesMock = activeCat?.type === 'tag' || activeCat?.type === 'sale' ||
     (activeCat?.type === 'category' && ['Túi xách', 'Trang sức'].includes(activeCat.value));
+
+  // Reset filters when category changes
+  const handleCategoryChange = (id: string) => {
+    setActiveCategory(id);
+    setFilters({ priceRange: 'all', sizes: [], colors: [] });
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
