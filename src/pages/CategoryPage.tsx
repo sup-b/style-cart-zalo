@@ -155,8 +155,19 @@ export default function CategoryPage() {
         </div>
       </div>
 
-      {/* Divider */}
-      {!isSearching && <div className="mx-4 border-t border-border" />}
+      {/* Filter bar + Divider */}
+      {!isSearching && (
+        <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+          <ProductFilter
+            filters={filters}
+            onFiltersChange={setFilters}
+            activeCount={usesMock ? mockFiltered.length : dbFiltered.length}
+          />
+          <span className="font-body text-xs text-muted-foreground">
+            {usesMock ? mockFiltered.length : dbFiltered.length} sản phẩm
+          </span>
+        </div>
+      )}
 
       {/* Search Results or Filtered Products */}
       <div className="pt-4">
