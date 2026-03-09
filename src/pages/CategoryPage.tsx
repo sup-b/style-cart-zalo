@@ -84,20 +84,38 @@ export default function CategoryPage() {
     return [];
   };
 
-  const dbFiltered = useMemo(() => applyFilters(getDbProducts(), filters), [dbProducts, activeCategory, filters]);
+  const sortProducts = <T extends { price: number; sold?: number }>(items: T[]): T[] => {
+    const sorted = [...items];
+    switch (sortBy) {
+      case 'price-asc': return sorted.sort((a, b) => a.price - b.price);
+      case 'price-desc': return sorted.sort((a, b) => b.price - a.price);
+      case 'best-selling': return sorted.sort((a, b) => (b.sold || 0) - (a.sold || 0));
+      case 'newest': return sorted.reverse();
+      default: return sorted;
+    }
+  };
+
+  const dbFiltered = useMemo(() => sortProducts(applyFilters(getDbProducts(), filters)), [dbProducts, activeCategory, filters, sortBy]);
   const mockFiltered = useMemo(() => {
     const base = getMockProducts();
-    // Apply filters to mock products (adapt structure)
-    return applyFilters(base.map(p => ({ ...p, sizes: [], colors: [] })), filters);
-  }, [activeCategory, filters]);
+    return sortProducts(applyFilters(base.map(p => ({ ...p, sizes: [], colors: [] })), filters));
+  }, [activeCategory, filters, sortBy]);
   const usesMock = activeCat?.type === 'tag' || activeCat?.type === 'sale' ||
     (activeCat?.type === 'category' && ['Túi xách', 'Trang sức'].includes(activeCat.value));
 
-  // Reset filters when category changes
   const handleCategoryChange = (id: string) => {
     setActiveCategory(id);
     setFilters({ priceRange: 'all', sizes: [], colors: [] });
+    setSortBy('default');
   };
+
+  const SORT_OPTIONS = [
+    { id: 'default', label: 'Mặc định' },
+    { id: 'price-asc', label: 'Giá tăng dần' },
+    { id: 'price-desc', label: 'Giá giảm dần' },
+    { id: 'newest', label: 'Mới nhất' },
+    { id: 'best-selling', label: 'Bán chạy' },
+  ];
 
   return (
     <div className="min-h-screen bg-background pb-20">
