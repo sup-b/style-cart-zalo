@@ -25,7 +25,7 @@ const menuItems = [
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const { user, profile, isLoggedIn, loading, signOut } = useAuth();
+  const { user, profile, mockUser, isLoggedIn, loading, signOut } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
 
   const handleMenuClick = (item: typeof menuItems[0]) => {
