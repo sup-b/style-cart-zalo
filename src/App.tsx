@@ -34,6 +34,7 @@ import OrderHistoryPage from "./pages/OrderHistoryPage";
 import AccountInfoPage from "./pages/AccountInfoPage";
 import PaymentMethodsPage from "./pages/PaymentMethodsPage";
 import AppSettingsPage from "./pages/AppSettingsPage";
+import CollectionPage from "./pages/CollectionPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,12 @@ const App = () => (
                   <Route path="/" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <HomePage />
+                      <BottomNav />
+                    </div>
+                  } />
+                  <Route path="/collection/:type" element={
+                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                      <CollectionPage />
                       <BottomNav />
                     </div>
                   } />
