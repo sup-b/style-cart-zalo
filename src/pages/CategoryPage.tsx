@@ -36,9 +36,25 @@ const mockCategoryMap: Record<string, string> = {
 
 export default function CategoryPage() {
   const [activeCategory, setActiveCategory] = useState<string>('ao');
+  const [searchQuery, setSearchQuery] = useState('');
   const { data: dbProducts = [], isLoading } = useProducts();
 
   const activeCat = categoryLinks.find(c => c.id === activeCategory);
+
+  // Search across all products
+  const isSearching = searchQuery.trim().length > 0;
+  const searchResults = useMemo(() => {
+    if (!isSearching) return { db: [], mock: [] };
+    const q = searchQuery.toLowerCase().trim();
+    return {
+      db: dbProducts.filter(p =>
+        p.nameVi.toLowerCase().includes(q) ||
+        p.name.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q)
+      ),
+      mock: mockProducts.filter(p => p.name.toLowerCase().includes(q)),
+    };
+  }, [searchQuery, dbProducts, isSearching]);
 
   // Get filtered DB products for category types
   const getDbProducts = () => {
