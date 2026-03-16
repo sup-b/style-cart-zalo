@@ -174,7 +174,7 @@ export default function CheckoutPage() {
           disabled={isProcessing}
           className="w-full bg-foreground py-3.5 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {isProcessing ? 'Đang xử lý...' : `Xác nhận thanh toán · ${formatPrice(totalPrice)}`}
+          {isProcessing ? 'Đang xử lý...' : `Xác nhận thanh toán · ${formatPrice(finalPrice)}`}
         </button>
       </div>
     </div>
