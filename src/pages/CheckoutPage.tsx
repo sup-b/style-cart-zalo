@@ -155,6 +155,14 @@ export default function CheckoutPage() {
         </div>
       </div>
 
+      {/* Coupon */}
+      <CouponSection
+        totalPrice={totalPrice}
+        appliedCoupon={appliedCoupon}
+        onApply={setAppliedCoupon}
+        onRemove={() => setAppliedCoupon(null)}
+      />
+
       {/* Payment methods */}
       <PaymentSection selectedMethod={selectedPayment} onMethodChange={setSelectedPayment} />
 
