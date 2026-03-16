@@ -116,9 +116,21 @@ export default function CheckoutPage() {
             <span className="font-body text-xs font-semibold">{formatPrice(item.product.price * item.quantity)}</span>
           </div>
         ))}
-        <div className="mt-3 flex justify-between border-t border-border pt-3">
-          <span className="font-body text-sm font-semibold">Tổng cộng</span>
-          <span className="font-body text-sm font-bold">{formatPrice(totalPrice)}</span>
+        <div className="mt-3 space-y-1 border-t border-border pt-3">
+          <div className="flex justify-between">
+            <span className="font-body text-sm text-muted-foreground">Tạm tính</span>
+            <span className="font-body text-sm">{formatPrice(totalPrice)}</span>
+          </div>
+          {discount > 0 && (
+            <div className="flex justify-between">
+              <span className="font-body text-sm text-green-600">Giảm giá ({appliedCoupon?.code})</span>
+              <span className="font-body text-sm font-medium text-green-600">-{formatPrice(discount)}</span>
+            </div>
+          )}
+          <div className="flex justify-between pt-1">
+            <span className="font-body text-sm font-semibold">Tổng cộng</span>
+            <span className="font-body text-sm font-bold">{formatPrice(finalPrice)}</span>
+          </div>
         </div>
       </div>
 
