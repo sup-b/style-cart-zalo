@@ -19,6 +19,10 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState('');
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('zalopay');
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
+
+  const discount = appliedCoupon?.discount ?? 0;
+  const finalPrice = Math.max(0, totalPrice - discount);
 
   if (orderId) {
     return (
