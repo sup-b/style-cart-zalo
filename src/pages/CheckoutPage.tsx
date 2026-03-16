@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCreateOrder } from '@/hooks/useOrders';
 import PaymentSection, { type PaymentMethod } from '@/components/PaymentSection';
+import CouponSection, { type AppliedCoupon } from '@/components/CouponSection';
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
@@ -18,6 +19,10 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState('');
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('zalopay');
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
+
+  const discount = appliedCoupon?.discount ?? 0;
+  const finalPrice = Math.max(0, totalPrice - discount);
 
   if (orderId) {
     return (
@@ -61,7 +66,7 @@ export default function CheckoutPage() {
           phone: phone.trim(),
           address: address.trim(),
           note: note.trim(),
-          total: totalPrice,
+          total: finalPrice,
         });
         setOrderId(code);
         clearCart();
@@ -76,7 +81,7 @@ export default function CheckoutPage() {
           phone: phone.trim(),
           address: address.trim(),
           note: note.trim(),
-          total: totalPrice,
+          total: finalPrice,
         });
         clearCart();
         toast.success('Đặt hàng thành công!');
@@ -111,9 +116,21 @@ export default function CheckoutPage() {
             <span className="font-body text-xs font-semibold">{formatPrice(item.product.price * item.quantity)}</span>
           </div>
         ))}
-        <div className="mt-3 flex justify-between border-t border-border pt-3">
-          <span className="font-body text-sm font-semibold">Tổng cộng</span>
-          <span className="font-body text-sm font-bold">{formatPrice(totalPrice)}</span>
+        <div className="mt-3 space-y-1 border-t border-border pt-3">
+          <div className="flex justify-between">
+            <span className="font-body text-sm text-muted-foreground">Tạm tính</span>
+            <span className="font-body text-sm">{formatPrice(totalPrice)}</span>
+          </div>
+          {discount > 0 && (
+            <div className="flex justify-between">
+              <span className="font-body text-sm text-green-600">Giảm giá ({appliedCoupon?.code})</span>
+              <span className="font-body text-sm font-medium text-green-600">-{formatPrice(discount)}</span>
+            </div>
+          )}
+          <div className="flex justify-between pt-1">
+            <span className="font-body text-sm font-semibold">Tổng cộng</span>
+            <span className="font-body text-sm font-bold">{formatPrice(finalPrice)}</span>
+          </div>
         </div>
       </div>
 
@@ -138,6 +155,14 @@ export default function CheckoutPage() {
         </div>
       </div>
 
+      {/* Coupon */}
+      <CouponSection
+        totalPrice={totalPrice}
+        appliedCoupon={appliedCoupon}
+        onApply={setAppliedCoupon}
+        onRemove={() => setAppliedCoupon(null)}
+      />
+
       {/* Payment methods */}
       <PaymentSection selectedMethod={selectedPayment} onMethodChange={setSelectedPayment} />
 
@@ -149,7 +174,7 @@ export default function CheckoutPage() {
           disabled={isProcessing}
           className="w-full bg-foreground py-3.5 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {isProcessing ? 'Đang xử lý...' : `Xác nhận thanh toán · ${formatPrice(totalPrice)}`}
+          {isProcessing ? 'Đang xử lý...' : `Xác nhận thanh toán · ${formatPrice(finalPrice)}`}
         </button>
       </div>
     </div>
