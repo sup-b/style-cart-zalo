@@ -5,6 +5,7 @@ import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCreateOrder } from '@/hooks/useOrders';
+import PaymentSection, { type PaymentMethod } from '@/components/PaymentSection';
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
@@ -15,6 +16,8 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState('');
   const [note, setNote] = useState('');
   const [orderId, setOrderId] = useState('');
+  const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('zalopay');
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
   if (orderId) {
     return (
@@ -35,39 +38,65 @@ export default function CheckoutPage() {
     return null;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePayment = async () => {
     if (!name.trim() || !phone.trim() || !address.trim()) {
-      toast.error('Vui lòng điền đầy đủ thông tin');
+      toast.error('Vui lòng điền đầy đủ thông tin giao hàng');
       return;
     }
     if (!/^[0-9]{10,11}$/.test(phone.trim())) {
       toast.error('Số điện thoại không hợp lệ');
       return;
     }
-    try {
-      const code = await createOrder.mutateAsync({
-        items,
-        customerName: name.trim(),
-        phone: phone.trim(),
-        address: address.trim(),
-        note: note.trim(),
-        total: totalPrice,
-      });
-      setOrderId(code);
-      clearCart();
-    } catch {
-      toast.error('Có lỗi xảy ra khi đặt hàng');
+
+    if (selectedPayment === 'zalopay') {
+      setPaymentLoading(true);
+      await new Promise((r) => setTimeout(r, 2000));
+      setPaymentLoading(false);
+      toast.info('Đang chuyển hướng đến cổng thanh toán ZaloPay...');
+      // Simulate: still create order
+      try {
+        const code = await createOrder.mutateAsync({
+          items,
+          customerName: name.trim(),
+          phone: phone.trim(),
+          address: address.trim(),
+          note: note.trim(),
+          total: totalPrice,
+        });
+        setOrderId(code);
+        clearCart();
+      } catch {
+        toast.error('Có lỗi xảy ra khi đặt hàng');
+      }
+    } else {
+      try {
+        const code = await createOrder.mutateAsync({
+          items,
+          customerName: name.trim(),
+          phone: phone.trim(),
+          address: address.trim(),
+          note: note.trim(),
+          total: totalPrice,
+        });
+        clearCart();
+        toast.success('Đặt hàng thành công!');
+        navigate('/order-history');
+      } catch {
+        toast.error('Có lỗi xảy ra khi đặt hàng');
+      }
     }
   };
 
+  const isProcessing = paymentLoading || createOrder.isPending;
+
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-24">
       <div className="sticky top-0 z-40 flex items-center gap-3 bg-background/95 px-4 py-3 backdrop-blur-md border-b border-border">
         <button onClick={() => navigate(-1)}><ArrowLeft className="h-5 w-5" /></button>
         <h1 className="font-display text-xl">Đặt hàng</h1>
       </div>
 
+      {/* Order summary */}
       <div className="border-b border-border px-4 py-4">
         <h2 className="mb-3 font-body text-xs font-semibold uppercase tracking-widest text-muted-foreground">Đơn hàng ({items.length} sản phẩm)</h2>
         {items.map(item => (
@@ -88,29 +117,41 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 p-4">
+      {/* Shipping info */}
+      <div className="space-y-4 border-b border-border p-4">
         <h2 className="font-body text-xs font-semibold uppercase tracking-widest text-muted-foreground">Thông tin giao hàng</h2>
         <div>
           <label className="mb-1 block font-body text-xs text-muted-foreground">Họ tên *</label>
-          <input value={name} onChange={e => setName(e.target.value)} className="w-full border border-border bg-background px-3 py-2.5 font-body text-sm focus:outline-none focus:ring-1 focus:ring-foreground" placeholder="Nguyễn Văn A" required />
+          <input value={name} onChange={e => setName(e.target.value)} className="w-full border border-border bg-background px-3 py-2.5 font-body text-sm focus:outline-none focus:ring-1 focus:ring-foreground" placeholder="Nguyễn Văn A" />
         </div>
         <div>
           <label className="mb-1 block font-body text-xs text-muted-foreground">Số điện thoại *</label>
-          <input value={phone} onChange={e => setPhone(e.target.value)} type="tel" className="w-full border border-border bg-background px-3 py-2.5 font-body text-sm focus:outline-none focus:ring-1 focus:ring-foreground" placeholder="0901234567" required />
+          <input value={phone} onChange={e => setPhone(e.target.value)} type="tel" className="w-full border border-border bg-background px-3 py-2.5 font-body text-sm focus:outline-none focus:ring-1 focus:ring-foreground" placeholder="0901234567" />
         </div>
         <div>
           <label className="mb-1 block font-body text-xs text-muted-foreground">Địa chỉ giao hàng *</label>
-          <textarea value={address} onChange={e => setAddress(e.target.value)} rows={2} className="w-full border border-border bg-background px-3 py-2.5 font-body text-sm focus:outline-none focus:ring-1 focus:ring-foreground" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành" required />
+          <textarea value={address} onChange={e => setAddress(e.target.value)} rows={2} className="w-full border border-border bg-background px-3 py-2.5 font-body text-sm focus:outline-none focus:ring-1 focus:ring-foreground" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành" />
         </div>
         <div>
           <label className="mb-1 block font-body text-xs text-muted-foreground">Ghi chú</label>
           <textarea value={note} onChange={e => setNote(e.target.value)} rows={2} className="w-full border border-border bg-background px-3 py-2.5 font-body text-sm focus:outline-none focus:ring-1 focus:ring-foreground" placeholder="Ghi chú cho đơn hàng (nếu có)" />
         </div>
-        <button type="submit" disabled={createOrder.isPending}
-          className="w-full bg-foreground py-3.5 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:opacity-50">
-          {createOrder.isPending ? 'Đang xử lý...' : 'Xác nhận đặt hàng'}
+      </div>
+
+      {/* Payment methods */}
+      <PaymentSection selectedMethod={selectedPayment} onMethodChange={setSelectedPayment} />
+
+      {/* Fixed checkout button */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 px-4 py-3 backdrop-blur-md">
+        <button
+          type="button"
+          onClick={handlePayment}
+          disabled={isProcessing}
+          className="w-full bg-foreground py-3.5 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+        >
+          {isProcessing ? 'Đang xử lý...' : `Xác nhận thanh toán · ${formatPrice(totalPrice)}`}
         </button>
-      </form>
+      </div>
     </div>
   );
 }
