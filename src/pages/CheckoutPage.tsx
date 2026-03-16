@@ -66,7 +66,7 @@ export default function CheckoutPage() {
           phone: phone.trim(),
           address: address.trim(),
           note: note.trim(),
-          total: totalPrice,
+          total: finalPrice,
         });
         setOrderId(code);
         clearCart();
