@@ -162,6 +162,14 @@ export default function CheckoutPage() {
         </div>
       </div>
 
+      {/* Shipping estimate */}
+      <ShippingEstimate
+        address={address}
+        subtotal={totalPrice}
+        shippingMethod={shippingMethod}
+        onMethodChange={setShippingMethod}
+      />
+
       {/* Coupon */}
       <CouponSection
         totalPrice={totalPrice}
