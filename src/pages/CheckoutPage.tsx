@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { useCreateOrder } from '@/hooks/useOrders';
 import PaymentSection, { type PaymentMethod } from '@/components/PaymentSection';
 import CouponSection, { type AppliedCoupon } from '@/components/CouponSection';
+import ShippingEstimate, { getShippingFee, type ShippingMethod } from '@/components/ShippingEstimate';
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
@@ -20,9 +21,11 @@ export default function CheckoutPage() {
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('zalopay');
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
+  const [shippingMethod, setShippingMethod] = useState<ShippingMethod>('standard');
 
   const discount = appliedCoupon?.discount ?? 0;
-  const finalPrice = Math.max(0, totalPrice - discount);
+  const shippingFee = getShippingFee(address, totalPrice, shippingMethod);
+  const finalPrice = Math.max(0, totalPrice - discount + shippingFee);
 
   if (orderId) {
     return (
@@ -127,6 +130,10 @@ export default function CheckoutPage() {
               <span className="font-body text-sm font-medium text-green-600">-{formatPrice(discount)}</span>
             </div>
           )}
+          <div className="flex justify-between">
+            <span className="font-body text-sm text-muted-foreground">Phí vận chuyển</span>
+            <span className="font-body text-sm">{shippingFee === 0 ? <span className="text-green-600 font-medium">Miễn phí</span> : formatPrice(shippingFee)}</span>
+          </div>
           <div className="flex justify-between pt-1">
             <span className="font-body text-sm font-semibold">Tổng cộng</span>
             <span className="font-body text-sm font-bold">{formatPrice(finalPrice)}</span>
@@ -154,6 +161,14 @@ export default function CheckoutPage() {
           <textarea value={note} onChange={e => setNote(e.target.value)} rows={2} className="w-full border border-border bg-background px-3 py-2.5 font-body text-sm focus:outline-none focus:ring-1 focus:ring-foreground" placeholder="Ghi chú cho đơn hàng (nếu có)" />
         </div>
       </div>
+
+      {/* Shipping estimate */}
+      <ShippingEstimate
+        address={address}
+        subtotal={totalPrice}
+        shippingMethod={shippingMethod}
+        onMethodChange={setShippingMethod}
+      />
 
       {/* Coupon */}
       <CouponSection
