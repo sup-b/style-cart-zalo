@@ -130,6 +130,10 @@ export default function CheckoutPage() {
               <span className="font-body text-sm font-medium text-green-600">-{formatPrice(discount)}</span>
             </div>
           )}
+          <div className="flex justify-between">
+            <span className="font-body text-sm text-muted-foreground">Phí vận chuyển</span>
+            <span className="font-body text-sm">{shippingFee === 0 ? <span className="text-green-600 font-medium">Miễn phí</span> : formatPrice(shippingFee)}</span>
+          </div>
           <div className="flex justify-between pt-1">
             <span className="font-body text-sm font-semibold">Tổng cộng</span>
             <span className="font-body text-sm font-bold">{formatPrice(finalPrice)}</span>
