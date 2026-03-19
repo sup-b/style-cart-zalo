@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { formatPrice } from '@/data/products';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCreateOrder } from '@/hooks/useOrders';
 import PaymentSection, { type PaymentMethod } from '@/components/PaymentSection';
 import CouponSection, { type AppliedCoupon } from '@/components/CouponSection';
 import ShippingEstimate, { getShippingFee, type ShippingMethod } from '@/components/ShippingEstimate';
+import CheckoutActionBar from '@/components/CheckoutActionBar';
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
@@ -17,9 +18,7 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [note, setNote] = useState('');
-  const [orderId, setOrderId] = useState('');
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('zalopay');
-  const [paymentLoading, setPaymentLoading] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
   const [shippingMethod, setShippingMethod] = useState<ShippingMethod>('standard');
 
@@ -27,75 +26,24 @@ export default function CheckoutPage() {
   const shippingFee = getShippingFee(address, totalPrice, shippingMethod);
   const finalPrice = Math.max(0, totalPrice - discount + shippingFee);
 
-  if (orderId) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-8 pb-20 text-center">
-        <CheckCircle className="h-16 w-16 text-foreground animate-fade-in" />
-        <h1 className="font-display text-2xl">Đặt hàng thành công!</h1>
-        <p className="font-body text-sm text-muted-foreground">Mã đơn hàng: <span className="font-semibold text-foreground">{orderId}</span></p>
-        <p className="font-body text-xs text-muted-foreground">Chúng tôi sẽ liên hệ để xác nhận đơn hàng qua Zalo.</p>
-        <button onClick={() => navigate('/')} className="mt-4 border border-foreground px-8 py-3 font-body text-xs uppercase tracking-widest transition-colors hover:bg-foreground hover:text-background">
-          Về trang chủ
-        </button>
-      </div>
-    );
-  }
-
   if (items.length === 0) {
     navigate('/cart');
     return null;
   }
 
-  const handlePayment = async () => {
-    if (!name.trim() || !phone.trim() || !address.trim()) {
-      toast.error('Vui lòng điền đầy đủ thông tin giao hàng');
-      return;
-    }
-    if (!/^[0-9]{10,11}$/.test(phone.trim())) {
-      toast.error('Số điện thoại không hợp lệ');
-      return;
-    }
-
-    if (selectedPayment === 'zalopay') {
-      setPaymentLoading(true);
-      await new Promise((r) => setTimeout(r, 2000));
-      setPaymentLoading(false);
-      toast.info('Đang chuyển hướng đến cổng thanh toán ZaloPay...');
-      // Simulate: still create order
-      try {
-        const code = await createOrder.mutateAsync({
-          items,
-          customerName: name.trim(),
-          phone: phone.trim(),
-          address: address.trim(),
-          note: note.trim(),
-          total: finalPrice,
-        });
-        setOrderId(code);
-        clearCart();
-      } catch {
-        toast.error('Có lỗi xảy ra khi đặt hàng');
-      }
-    } else {
-      try {
-        const code = await createOrder.mutateAsync({
-          items,
-          customerName: name.trim(),
-          phone: phone.trim(),
-          address: address.trim(),
-          note: note.trim(),
-          total: finalPrice,
-        });
-        clearCart();
-        toast.success('Đặt hàng thành công!');
-        navigate('/order-history');
-      } catch {
-        toast.error('Có lỗi xảy ra khi đặt hàng');
-      }
-    }
+  const handleSubmitOrder = async () => {
+    const code = await createOrder.mutateAsync({
+      items,
+      customerName: name.trim(),
+      phone: phone.trim(),
+      address: address.trim(),
+      note: note.trim(),
+      total: finalPrice,
+    });
+    clearCart();
+    toast.success('🎉 Đặt hàng thành công!');
+    navigate('/order-success', { state: { orderCode: code, totalPrice: finalPrice } });
   };
-
-  const isProcessing = paymentLoading || createOrder.isPending;
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -181,17 +129,15 @@ export default function CheckoutPage() {
       {/* Payment methods */}
       <PaymentSection selectedMethod={selectedPayment} onMethodChange={setSelectedPayment} />
 
-      {/* Fixed checkout button */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 px-4 py-3 backdrop-blur-md">
-        <button
-          type="button"
-          onClick={handlePayment}
-          disabled={isProcessing}
-          className="w-full bg-foreground py-3.5 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
-          {isProcessing ? 'Đang xử lý...' : `Xác nhận thanh toán · ${formatPrice(finalPrice)}`}
-        </button>
-      </div>
+      <CheckoutActionBar
+        totalPrice={finalPrice}
+        customerName={name}
+        phone={phone}
+        address={address}
+        selectedPayment={selectedPayment}
+        cartEmpty={items.length === 0}
+        onSubmit={handleSubmitOrder}
+      />
     </div>
   );
 }

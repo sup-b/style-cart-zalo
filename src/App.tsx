@@ -35,6 +35,7 @@ import AccountInfoPage from "./pages/AccountInfoPage";
 import PaymentMethodsPage from "./pages/PaymentMethodsPage";
 import AppSettingsPage from "./pages/AppSettingsPage";
 import CollectionPage from "./pages/CollectionPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -95,6 +96,13 @@ const App = () => (
                       <div className="mx-auto max-w-md min-h-screen bg-background relative">
                         <CheckoutPage />
                         <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/order-success" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <OrderSuccessPage />
                       </div>
                     </ProtectedRoute>
                   } />
