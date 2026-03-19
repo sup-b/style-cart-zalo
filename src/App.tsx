@@ -99,6 +99,13 @@ const App = () => (
                       </div>
                     </ProtectedRoute>
                   } />
+                  <Route path="/order-success" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <OrderSuccessPage />
+                      </div>
+                    </ProtectedRoute>
+                  } />
                   <Route path="/wishlist" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <WishlistPage />
