@@ -131,17 +131,15 @@ export default function CheckoutPage() {
       {/* Payment methods */}
       <PaymentSection selectedMethod={selectedPayment} onMethodChange={setSelectedPayment} />
 
-      {/* Fixed checkout button */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 px-4 py-3 backdrop-blur-md">
-        <button
-          type="button"
-          onClick={handlePayment}
-          disabled={isProcessing}
-          className="w-full bg-foreground py-3.5 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
-          {isProcessing ? 'Đang xử lý...' : `Xác nhận thanh toán · ${formatPrice(finalPrice)}`}
-        </button>
-      </div>
+      <CheckoutActionBar
+        totalPrice={finalPrice}
+        customerName={name}
+        phone={phone}
+        address={address}
+        selectedPayment={selectedPayment}
+        cartEmpty={items.length === 0}
+        onSubmit={handleSubmitOrder}
+      />
     </div>
   );
 }
