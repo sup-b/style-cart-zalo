@@ -35,6 +35,7 @@ import AccountInfoPage from "./pages/AccountInfoPage";
 import PaymentMethodsPage from "./pages/PaymentMethodsPage";
 import AppSettingsPage from "./pages/AppSettingsPage";
 import CollectionPage from "./pages/CollectionPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
