@@ -8,6 +8,7 @@ import { useCreateOrder } from '@/hooks/useOrders';
 import PaymentSection, { type PaymentMethod } from '@/components/PaymentSection';
 import CouponSection, { type AppliedCoupon } from '@/components/CouponSection';
 import ShippingEstimate, { getShippingFee, type ShippingMethod } from '@/components/ShippingEstimate';
+import CheckoutActionBar from '@/components/CheckoutActionBar';
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
