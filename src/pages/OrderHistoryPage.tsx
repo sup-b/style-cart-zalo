@@ -41,7 +41,7 @@ export default function OrderHistoryPage() {
           {orders.map(order => {
             const badge = statusBadge[order.status];
             return (
-              <div key={order.id} className="rounded-xl bg-card p-4 shadow-sm space-y-3">
+              <div key={order.id} onClick={() => navigate(`/order/${order.id}`)} className="rounded-xl bg-card p-4 shadow-sm space-y-3 cursor-pointer active:opacity-70 transition-opacity">
                 <div className="flex items-center justify-between">
                   <span className="font-body text-xs text-muted-foreground">{order.id}</span>
                   <span className={`rounded-full px-2.5 py-0.5 font-body text-[10px] font-medium ${badge.color}`}>
