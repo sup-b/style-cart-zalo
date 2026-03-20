@@ -36,6 +36,7 @@ import PaymentMethodsPage from "./pages/PaymentMethodsPage";
 import AppSettingsPage from "./pages/AppSettingsPage";
 import CollectionPage from "./pages/CollectionPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
+import OrderDetailPage from "./pages/OrderDetailPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -132,6 +133,14 @@ const App = () => (
                     <ProtectedRoute>
                       <div className="mx-auto max-w-md min-h-screen bg-background relative">
                         <OrderHistoryPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/order/:orderCode" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <OrderDetailPage />
                         <BottomNav />
                       </div>
                     </ProtectedRoute>
