@@ -64,7 +64,10 @@ export default function ProductDetailPage() {
             <span className="font-body text-lg font-bold">{formatPrice(product.price)}</span>
             {product.originalPrice && <span className="font-body text-sm text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>}
           </div>
-          <p className="mt-1 font-body text-xs text-muted-foreground">Đã bán {product.sold}+</p>
+          <div className="mt-1 flex items-center gap-3">
+            <RatingSummary productId={product.id} />
+            <span className="font-body text-xs text-muted-foreground">Đã bán {product.sold}+</span>
+          </div>
         </div>
 
         <div>
