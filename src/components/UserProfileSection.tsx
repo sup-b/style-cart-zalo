@@ -1,4 +1,4 @@
-import { Wallet, Package, Truck, Star, Heart, User, CreditCard, Settings, ChevronRight } from 'lucide-react';
+import { Wallet, Package, Truck, Star, Heart, User, CreditCard, Settings, ChevronRight, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDbOrders } from '@/hooks/useOrders';
 import { useEffect } from 'react';
