@@ -9,6 +9,8 @@ import { InlineRating } from '@/components/ProductReviews';
 export default function ProductCard({ product }: { product: Product }) {
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(product.id);
+  const { data: reviews = [] } = useReviews(product.id);
+  const { avg, count } = getAverageRating(reviews);
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
