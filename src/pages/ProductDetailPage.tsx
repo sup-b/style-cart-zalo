@@ -116,6 +116,8 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
+      <ProductReviews productId={product.id} />
+
       <div className="fixed bottom-16 left-0 right-0 z-40 border-t border-border bg-card/95 px-4 py-3 backdrop-blur-md">
         <button onClick={handleAddToCart}
           className="flex w-full items-center justify-center gap-2 bg-foreground py-3.5 font-body text-sm font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90 active:opacity-80">

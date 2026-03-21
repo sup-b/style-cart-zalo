@@ -54,7 +54,8 @@ export default function ProductCard({ product }: { product: Product }) {
             <span className="font-body text-xs text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
           )}
         </div>
-        <div className="flex gap-1 pt-1">
+        <InlineRating avg={avg} count={count} />
+        <div className="flex gap-1 pt-0.5">
           {product.colors.map(c => (
             <span key={c.name} className="h-3 w-3 rounded-full border border-border" style={{ backgroundColor: c.hex }} />
           ))}
