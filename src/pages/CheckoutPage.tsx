@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { formatPrice } from '@/data/products';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCreateOrder } from '@/hooks/useOrders';
+import { useAddresses } from '@/hooks/useAddresses';
+import { useAuth } from '@/context/AuthContext';
 import PaymentSection, { type PaymentMethod } from '@/components/PaymentSection';
 import CouponSection, { type AppliedCoupon } from '@/components/CouponSection';
 import ShippingEstimate, { getShippingFee, type ShippingMethod } from '@/components/ShippingEstimate';
@@ -14,6 +16,8 @@ export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const createOrder = useCreateOrder();
   const navigate = useNavigate();
+  const { profile } = useAuth();
+  const { data: addresses } = useAddresses();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
@@ -21,6 +25,19 @@ export default function CheckoutPage() {
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('zalopay');
   const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
   const [shippingMethod, setShippingMethod] = useState<ShippingMethod>('standard');
+  const [prefilled, setPrefilled] = useState(false);
+
+  // Auto-fill from default address
+  useEffect(() => {
+    if (prefilled || !addresses?.length) return;
+    const defaultAddr = addresses.find(a => a.is_default) || addresses[0];
+    if (defaultAddr) {
+      setName(defaultAddr.recipient_name);
+      setPhone(defaultAddr.phone);
+      setAddress([defaultAddr.address_line, defaultAddr.district, defaultAddr.city].filter(Boolean).join(', '));
+      setPrefilled(true);
+    }
+  }, [addresses, prefilled]);
 
   const discount = appliedCoupon?.discount ?? 0;
   const shippingFee = getShippingFee(address, totalPrice, shippingMethod);
