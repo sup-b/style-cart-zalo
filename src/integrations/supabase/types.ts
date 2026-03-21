@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      addresses: {
+        Row: {
+          address_line: string
+          city: string
+          created_at: string
+          district: string
+          id: string
+          is_default: boolean
+          label: string
+          phone: string
+          recipient_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address_line: string
+          city?: string
+          created_at?: string
+          district?: string
+          id?: string
+          is_default?: boolean
+          label?: string
+          phone: string
+          recipient_name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address_line?: string
+          city?: string
+          created_at?: string
+          district?: string
+          id?: string
+          is_default?: boolean
+          label?: string
+          phone?: string
+          recipient_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           color: string
@@ -245,7 +287,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      set_default_address: {
+        Args: { p_address_id: string; p_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

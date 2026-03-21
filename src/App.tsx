@@ -37,6 +37,7 @@ import AppSettingsPage from "./pages/AppSettingsPage";
 import CollectionPage from "./pages/CollectionPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
+import AddressManagementPage from "./pages/AddressManagementPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -149,6 +150,14 @@ const App = () => (
                     <ProtectedRoute>
                       <div className="mx-auto max-w-md min-h-screen bg-background relative">
                         <AccountInfoPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/addresses" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <AddressManagementPage />
                         <BottomNav />
                       </div>
                     </ProtectedRoute>
