@@ -3,10 +3,14 @@ import { Heart } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useReviews, getAverageRating } from '@/hooks/useReviews';
+import { InlineRating } from '@/components/ProductReviews';
 
 export default function ProductCard({ product }: { product: Product }) {
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(product.id);
+  const { data: reviews = [] } = useReviews(product.id);
+  const { avg, count } = getAverageRating(reviews);
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -50,7 +54,8 @@ export default function ProductCard({ product }: { product: Product }) {
             <span className="font-body text-xs text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
           )}
         </div>
-        <div className="flex gap-1 pt-1">
+        <InlineRating avg={avg} count={count} />
+        <div className="flex gap-1 pt-0.5">
           {product.colors.map(c => (
             <span key={c.name} className="h-3 w-3 rounded-full border border-border" style={{ backgroundColor: c.hex }} />
           ))}

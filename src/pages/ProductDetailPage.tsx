@@ -9,6 +9,7 @@ import { ArrowLeft, Heart, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProduct } from '@/hooks/useProducts';
 import { Skeleton } from '@/components/ui/skeleton';
+import ProductReviews, { RatingSummary } from '@/components/ProductReviews';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -63,7 +64,10 @@ export default function ProductDetailPage() {
             <span className="font-body text-lg font-bold">{formatPrice(product.price)}</span>
             {product.originalPrice && <span className="font-body text-sm text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>}
           </div>
-          <p className="mt-1 font-body text-xs text-muted-foreground">Đã bán {product.sold}+</p>
+          <div className="mt-1 flex items-center gap-3">
+            <RatingSummary productId={product.id} />
+            <span className="font-body text-xs text-muted-foreground">Đã bán {product.sold}+</span>
+          </div>
         </div>
 
         <div>
@@ -111,6 +115,8 @@ export default function ProductDetailPage() {
           <p className="font-body text-xs text-muted-foreground">Chất liệu: {product.material}</p>
         </div>
       </div>
+
+      <ProductReviews productId={product.id} />
 
       <div className="fixed bottom-16 left-0 right-0 z-40 border-t border-border bg-card/95 px-4 py-3 backdrop-blur-md">
         <button onClick={handleAddToCart}
