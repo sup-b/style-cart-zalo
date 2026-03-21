@@ -154,6 +154,14 @@ const App = () => (
                       </div>
                     </ProtectedRoute>
                   } />
+                  <Route path="/addresses" element={
+                    <ProtectedRoute>
+                      <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                        <AddressManagementPage />
+                        <BottomNav />
+                      </div>
+                    </ProtectedRoute>
+                  } />
                   <Route path="/payment-methods" element={
                     <ProtectedRoute>
                       <div className="mx-auto max-w-md min-h-screen bg-background relative">
