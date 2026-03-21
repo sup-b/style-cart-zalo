@@ -14,6 +14,7 @@ const orderStatuses = [
 
 const menuItems = [
   { icon: Heart, label: 'Sản phẩm yêu thích', path: '/wishlist' },
+  { icon: MapPin, label: 'Địa chỉ giao hàng', path: '/addresses' },
   { icon: User, label: 'Thông tin tài khoản', path: '/account-info' },
   { icon: CreditCard, label: 'Phương thức thanh toán', path: '/payment-methods' },
   { icon: Settings, label: 'Cài đặt ứng dụng', path: '/settings' },
