@@ -3,6 +3,8 @@ import { Heart } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useReviews, getAverageRating } from '@/hooks/useReviews';
+import { InlineRating } from '@/components/ProductReviews';
 
 export default function ProductCard({ product }: { product: Product }) {
   const { isWishlisted, toggleWishlist } = useWishlist();
