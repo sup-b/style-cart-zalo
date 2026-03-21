@@ -9,6 +9,7 @@ import { ArrowLeft, Heart, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProduct } from '@/hooks/useProducts';
 import { Skeleton } from '@/components/ui/skeleton';
+import ProductReviews, { RatingSummary } from '@/components/ProductReviews';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
