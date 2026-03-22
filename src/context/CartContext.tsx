@@ -42,7 +42,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const removeItem = useCallback((productId: string, size: string, color: string) => {
-    setItems(prev => prev.filter(i => !(i.product.id === productId && i.size === size && i.color === color)));
+    setItems(prev => {
+      const next = prev.filter(i => !(i.product.id === productId && i.size === size && i.color === color));
+      localStorage.setItem('cart', JSON.stringify(next));
+      return next;
+    });
   }, []);
 
   const updateQuantity = useCallback((productId: string, size: string, color: string, quantity: number) => {
