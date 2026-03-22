@@ -33,10 +33,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addItem = useCallback((product: Product, size: string, color: string, quantity = 1) => {
     setItems(prev => {
       const existing = prev.find(i => i.product.id === product.id && i.size === size && i.color === color);
-      if (existing) {
-        return prev.map(i => i === existing ? { ...i, quantity: i.quantity + quantity } : i);
-      }
-      return [...prev, { product, size, color, quantity }];
+      const next = existing
+        ? prev.map(i => i === existing ? { ...i, quantity: i.quantity + quantity } : i)
+        : [...prev, { product, size, color, quantity }];
+      localStorage.setItem('cart', JSON.stringify(next));
+      return next;
     });
   }, []);
 
