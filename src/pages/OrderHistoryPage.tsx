@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDbOrders } from '@/hooks/useOrders';
 import { formatPrice } from '@/data/products';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { OrderStatus } from '@/context/OrderContext';
+import type { OrderStatus } from '@/hooks/useOrders';
 
 const statusBadge: Record<OrderStatus, { text: string; color: string }> = {
   pending: { text: 'Chờ thanh toán', color: 'bg-amber-100 text-amber-700' },
