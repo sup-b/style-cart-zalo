@@ -7,7 +7,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { formatPrice } from '@/data/products';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { OrderStatus } from '@/context/OrderContext';
+import type { OrderStatus } from '@/hooks/useOrders';
 
 const statusSteps: { status: OrderStatus; label: string; icon: typeof Package }[] = [
   { status: 'pending', label: 'Chờ thanh toán', icon: Wallet },

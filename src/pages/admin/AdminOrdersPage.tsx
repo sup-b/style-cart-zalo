@@ -1,6 +1,6 @@
 import { formatPrice } from '@/data/products';
 import { useDbOrders, useUpdateOrderStatus, useUpdateShippingNote } from '@/hooks/useOrders';
-import type { OrderStatus } from '@/context/OrderContext';
+import type { OrderStatus } from '@/hooks/useOrders';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const statusLabels: Record<OrderStatus, string> = {

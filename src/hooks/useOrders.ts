@@ -1,7 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import type { Order, OrderStatus } from '@/context/OrderContext';
 import type { CartItem } from '@/context/CartContext';
+
+export type OrderStatus = 'pending' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled';
+
+export type Order = {
+  id: string;
+  items: CartItem[];
+  customerName: string;
+  phone: string;
+  address: string;
+  note: string;
+  total: number;
+  status: OrderStatus;
+  createdAt: string;
+  shippingNote: string;
+  _dbId?: string;
+};
 
 async function fetchOrders(): Promise<Order[]> {
   const { data: orders, error: oe } = await supabase

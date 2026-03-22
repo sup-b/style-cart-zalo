@@ -21,20 +21,32 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; }
+  });
+
+  const persistItems = (newItems: CartItem[]) => {
+    setItems(newItems);
+    localStorage.setItem('cart', JSON.stringify(newItems));
+  };
 
   const addItem = useCallback((product: Product, size: string, color: string, quantity = 1) => {
     setItems(prev => {
       const existing = prev.find(i => i.product.id === product.id && i.size === size && i.color === color);
-      if (existing) {
-        return prev.map(i => i === existing ? { ...i, quantity: i.quantity + quantity } : i);
-      }
-      return [...prev, { product, size, color, quantity }];
+      const next = existing
+        ? prev.map(i => i === existing ? { ...i, quantity: i.quantity + quantity } : i)
+        : [...prev, { product, size, color, quantity }];
+      localStorage.setItem('cart', JSON.stringify(next));
+      return next;
     });
   }, []);
 
   const removeItem = useCallback((productId: string, size: string, color: string) => {
-    setItems(prev => prev.filter(i => !(i.product.id === productId && i.size === size && i.color === color)));
+    setItems(prev => {
+      const next = prev.filter(i => !(i.product.id === productId && i.size === size && i.color === color));
+      localStorage.setItem('cart', JSON.stringify(next));
+      return next;
+    });
   }, []);
 
   const updateQuantity = useCallback((productId: string, size: string, color: string, quantity: number) => {
@@ -42,12 +54,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeItem(productId, size, color);
       return;
     }
-    setItems(prev => prev.map(i =>
-      i.product.id === productId && i.size === size && i.color === color ? { ...i, quantity } : i
-    ));
+    setItems(prev => {
+      const next = prev.map(i =>
+        i.product.id === productId && i.size === size && i.color === color ? { ...i, quantity } : i
+      );
+      localStorage.setItem('cart', JSON.stringify(next));
+      return next;
+    });
   }, [removeItem]);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => { setItems([]); localStorage.removeItem('cart'); }, []);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);

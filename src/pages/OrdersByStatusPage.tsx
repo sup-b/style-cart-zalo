@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDbOrders } from '@/hooks/useOrders';
 import { formatPrice } from '@/data/products';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { OrderStatus } from '@/context/OrderContext';
+import type { OrderStatus } from '@/hooks/useOrders';
 
 const statusConfig: Record<string, { label: string; icon: any; dbStatus: OrderStatus }> = {
   'cho-thanh-toan': { label: 'Chờ thanh toán', icon: Wallet, dbStatus: 'pending' },
