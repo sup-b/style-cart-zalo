@@ -21,7 +21,14 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; }
+  });
+
+  const persistItems = (newItems: CartItem[]) => {
+    setItems(newItems);
+    localStorage.setItem('cart', JSON.stringify(newItems));
+  };
 
   const addItem = useCallback((product: Product, size: string, color: string, quantity = 1) => {
     setItems(prev => {
