@@ -54,12 +54,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeItem(productId, size, color);
       return;
     }
-    setItems(prev => prev.map(i =>
-      i.product.id === productId && i.size === size && i.color === color ? { ...i, quantity } : i
-    ));
+    setItems(prev => {
+      const next = prev.map(i =>
+        i.product.id === productId && i.size === size && i.color === color ? { ...i, quantity } : i
+      );
+      localStorage.setItem('cart', JSON.stringify(next));
+      return next;
+    });
   }, [removeItem]);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => { setItems([]); localStorage.removeItem('cart'); }, []);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
