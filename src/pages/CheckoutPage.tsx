@@ -57,7 +57,7 @@ export default function CheckoutPage() {
       note: note.trim(),
       total: finalPrice,
     });
-    clearCart();
+    clearSelectedItems();
     toast.success('🎉 Đặt hàng thành công!');
     navigate('/order-success', { state: { orderCode: code, totalPrice: finalPrice } });
   };
