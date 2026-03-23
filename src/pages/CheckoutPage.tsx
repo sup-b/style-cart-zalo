@@ -13,7 +13,7 @@ import ShippingEstimate, { getShippingFee, type ShippingMethod } from '@/compone
 import CheckoutActionBar from '@/components/CheckoutActionBar';
 
 export default function CheckoutPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { selectedItems: items, selectedTotal: totalPrice, clearSelectedItems } = useCart();
   const createOrder = useCreateOrder();
   const navigate = useNavigate();
   const { profile } = useAuth();
@@ -57,7 +57,7 @@ export default function CheckoutPage() {
       note: note.trim(),
       total: finalPrice,
     });
-    clearCart();
+    clearSelectedItems();
     toast.success('🎉 Đặt hàng thành công!');
     navigate('/order-success', { state: { orderCode: code, totalPrice: finalPrice } });
   };
