@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ArrowLeft, Plus, MapPin, Trash2, Star, Pencil, Home, Building2, Briefcase } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -6,6 +6,8 @@ import { useAddresses, useCreateAddress, useUpdateAddress, useDeleteAddress, use
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { provincesData } from '@/data/addressData';
 
 const labelOptions = [
   { value: 'Nhà', icon: Home },
@@ -13,7 +15,46 @@ const labelOptions = [
   { value: 'Khác', icon: Briefcase },
 ];
 
-const emptyForm = { label: 'Nhà', recipient_name: '', phone: '', address_line: '', district: '', city: '', is_default: false };
+type FormState = {
+  label: string;
+  recipient_name: string;
+  phone: string;
+  address_line: string;
+  provinceId: string;
+  districtId: string;
+  wardId: string;
+  is_default: boolean;
+};
+
+const emptyForm: FormState = {
+  label: 'Nhà',
+  recipient_name: '',
+  phone: '',
+  address_line: '',
+  provinceId: '',
+  districtId: '',
+  wardId: '',
+  is_default: false,
+};
+
+/** Reverse-lookup province/district/ward IDs from saved text names */
+function resolveIds(city: string, district: string) {
+  let provinceId = '';
+  let districtId = '';
+  for (const p of provincesData) {
+    if (p.name === city) {
+      provinceId = p.id;
+      for (const d of p.districts) {
+        if (d.name === district) {
+          districtId = d.id;
+          break;
+        }
+      }
+      break;
+    }
+  }
+  return { provinceId, districtId };
+}
 
 export default function AddressManagementPage() {
   const navigate = useNavigate();
@@ -26,7 +67,13 @@ export default function AddressManagementPage() {
 
   const [view, setView] = useState<'list' | 'form'>('list');
   const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState<FormState>(emptyForm);
+
+  // Derived cascading lists
+  const selectedProvince = useMemo(() => provincesData.find(p => p.id === form.provinceId), [form.provinceId]);
+  const availableDistricts = useMemo(() => selectedProvince?.districts ?? [], [selectedProvince]);
+  const selectedDistrict = useMemo(() => availableDistricts.find(d => d.id === form.districtId), [availableDistricts, form.districtId]);
+  const availableWards = useMemo(() => selectedDistrict?.wards ?? [], [selectedDistrict]);
 
   const openAdd = () => {
     setEditId(null);
@@ -35,9 +82,31 @@ export default function AddressManagementPage() {
   };
 
   const openEdit = (a: Address) => {
+    const { provinceId, districtId } = resolveIds(a.city, a.district);
     setEditId(a.id);
-    setForm({ label: a.label, recipient_name: a.recipient_name, phone: a.phone, address_line: a.address_line, district: a.district, city: a.city, is_default: a.is_default });
+    setForm({
+      label: a.label,
+      recipient_name: a.recipient_name,
+      phone: a.phone,
+      address_line: a.address_line,
+      provinceId,
+      districtId,
+      wardId: '', // ward is embedded in address_line or not separately stored
+      is_default: a.is_default,
+    });
     setView('form');
+  };
+
+  const handleProvinceChange = (id: string) => {
+    setForm(f => ({ ...f, provinceId: id, districtId: '', wardId: '' }));
+  };
+
+  const handleDistrictChange = (id: string) => {
+    setForm(f => ({ ...f, districtId: id, wardId: '' }));
+  };
+
+  const handleWardChange = (id: string) => {
+    setForm(f => ({ ...f, wardId: id }));
   };
 
   const handleSave = async () => {
@@ -49,15 +118,36 @@ export default function AddressManagementPage() {
       toast.warning('Số điện thoại không hợp lệ');
       return;
     }
+    if (!form.provinceId || !form.districtId || !form.wardId) {
+      toast.warning('Vui lòng chọn đầy đủ Tỉnh/Thành, Quận/Huyện và Phường/Xã');
+      return;
+    }
+
+    const provinceName = selectedProvince?.name ?? '';
+    const districtName = selectedDistrict?.name ?? '';
+    const wardName = availableWards.find(w => w.id === form.wardId)?.name ?? '';
+
+    const fullAddressLine = [form.address_line.trim(), wardName].filter(Boolean).join(', ');
+
     try {
+      const payload = {
+        label: form.label,
+        recipient_name: form.recipient_name.trim(),
+        phone: form.phone.trim(),
+        address_line: fullAddressLine,
+        district: districtName,
+        city: provinceName,
+        is_default: form.is_default,
+      };
+
       if (editId) {
-        await updateAddr.mutateAsync({ id: editId, ...form });
+        await updateAddr.mutateAsync({ id: editId, ...payload });
         if (form.is_default && user) {
           await setDefault.mutateAsync({ addressId: editId, userId: user.id });
         }
         toast.success('Cập nhật địa chỉ thành công');
       } else {
-        await createAddr.mutateAsync({ ...form, user_id: user!.id });
+        await createAddr.mutateAsync({ ...payload, user_id: user!.id });
         toast.success('Thêm địa chỉ thành công');
       }
       setView('list');
@@ -167,34 +257,102 @@ export default function AddressManagementPage() {
             </div>
 
             <div className="space-y-3">
-              <input value={form.recipient_name} onChange={e => setForm(f => ({ ...f, recipient_name: e.target.value }))}
-                placeholder="Họ và tên người nhận *" maxLength={100}
-                className="w-full rounded-lg border border-border bg-background px-4 py-3 font-body text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-              <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
-                placeholder="Số điện thoại *" maxLength={11} inputMode="numeric"
-                className="w-full rounded-lg border border-border bg-background px-4 py-3 font-body text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-              <input value={form.address_line} onChange={e => setForm(f => ({ ...f, address_line: e.target.value }))}
-                placeholder="Địa chỉ chi tiết (số nhà, đường) *" maxLength={200}
-                className="w-full rounded-lg border border-border bg-background px-4 py-3 font-body text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-              <div className="grid grid-cols-2 gap-3">
-                <input value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))}
-                  placeholder="Quận/Huyện" maxLength={100}
-                  className="w-full rounded-lg border border-border bg-background px-4 py-3 font-body text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-                <input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
-                  placeholder="Tỉnh/Thành phố" maxLength={100}
-                  className="w-full rounded-lg border border-border bg-background px-4 py-3 font-body text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
+              {/* Name & phone */}
+              <input
+                value={form.recipient_name}
+                onChange={e => setForm(f => ({ ...f, recipient_name: e.target.value }))}
+                placeholder="Họ và tên người nhận *"
+                maxLength={100}
+                className="w-full rounded-lg border border-border bg-background px-4 py-3 font-body text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+              <input
+                value={form.phone}
+                onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
+                placeholder="Số điện thoại *"
+                maxLength={11}
+                inputMode="numeric"
+                className="w-full rounded-lg border border-border bg-background px-4 py-3 font-body text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+
+              {/* Cascading address selects */}
+              <div className="space-y-3">
+                <div>
+                  <label className="font-body text-xs text-muted-foreground mb-1.5 block">Tỉnh/Thành phố *</label>
+                  <Select value={form.provinceId} onValueChange={handleProvinceChange}>
+                    <SelectTrigger className="w-full rounded-lg border-border bg-background font-body text-sm">
+                      <SelectValue placeholder="Chọn Tỉnh/Thành phố" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {provincesData.map(p => (
+                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="font-body text-xs text-muted-foreground mb-1.5 block">Quận/Huyện *</label>
+                  <Select
+                    value={form.districtId}
+                    onValueChange={handleDistrictChange}
+                    disabled={!form.provinceId}
+                  >
+                    <SelectTrigger className="w-full rounded-lg border-border bg-background font-body text-sm disabled:opacity-50">
+                      <SelectValue placeholder={form.provinceId ? 'Chọn Quận/Huyện' : 'Chọn Tỉnh/Thành trước'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableDistricts.map(d => (
+                        <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="font-body text-xs text-muted-foreground mb-1.5 block">Phường/Xã *</label>
+                  <Select
+                    value={form.wardId}
+                    onValueChange={handleWardChange}
+                    disabled={!form.districtId}
+                  >
+                    <SelectTrigger className="w-full rounded-lg border-border bg-background font-body text-sm disabled:opacity-50">
+                      <SelectValue placeholder={form.districtId ? 'Chọn Phường/Xã' : 'Chọn Quận/Huyện trước'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableWards.map(w => (
+                        <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
+
+              {/* Specific address */}
+              <input
+                value={form.address_line}
+                onChange={e => setForm(f => ({ ...f, address_line: e.target.value }))}
+                placeholder="Địa chỉ cụ thể (số nhà, tên đường) *"
+                maxLength={200}
+                className="w-full rounded-lg border border-border bg-background px-4 py-3 font-body text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+              />
             </div>
 
             {/* Default toggle */}
             <label className="flex items-center gap-3 rounded-lg border border-border p-3 cursor-pointer">
-              <input type="checkbox" checked={form.is_default} onChange={e => setForm(f => ({ ...f, is_default: e.target.checked }))}
-                className="h-4 w-4 accent-primary" />
+              <input
+                type="checkbox"
+                checked={form.is_default}
+                onChange={e => setForm(f => ({ ...f, is_default: e.target.checked }))}
+                className="h-4 w-4 accent-primary"
+              />
               <span className="font-body text-sm">Đặt làm địa chỉ mặc định</span>
             </label>
 
-            <button onClick={handleSave} disabled={createAddr.isPending || updateAddr.isPending}
-              className="w-full rounded-lg bg-foreground py-3.5 font-body text-sm font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-50 active:scale-[0.98]">
+            <button
+              onClick={handleSave}
+              disabled={createAddr.isPending || updateAddr.isPending}
+              className="w-full rounded-lg bg-foreground py-3.5 font-body text-sm font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-50 active:scale-[0.98]"
+            >
               {createAddr.isPending || updateAddr.isPending ? 'Đang lưu...' : (editId ? 'Cập nhật địa chỉ' : 'Lưu địa chỉ')}
             </button>
           </motion.div>
