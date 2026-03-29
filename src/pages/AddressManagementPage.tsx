@@ -1,13 +1,13 @@
-import { useState, useMemo } from 'react';
-import { ArrowLeft, Plus, MapPin, Trash2, Star, Pencil, Home, Building2, Briefcase } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { ArrowLeft, Plus, MapPin, Trash2, Star, Pencil, Home, Building2, Briefcase, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useAddresses, useCreateAddress, useUpdateAddress, useDeleteAddress, useSetDefaultAddress, type Address } from '@/hooks/useAddresses';
+import { useProvinces, useDistricts, useWards } from '@/hooks/useProvinces';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { provincesData } from '@/data/addressData';
 
 const labelOptions = [
   { value: 'Nhà', icon: Home },
@@ -20,9 +20,9 @@ type FormState = {
   recipient_name: string;
   phone: string;
   address_line: string;
-  provinceId: string;
-  districtId: string;
-  wardId: string;
+  provinceCode: string;
+  districtCode: string;
+  wardCode: string;
   is_default: boolean;
 };
 
@@ -31,82 +31,107 @@ const emptyForm: FormState = {
   recipient_name: '',
   phone: '',
   address_line: '',
-  provinceId: '',
-  districtId: '',
-  wardId: '',
+  provinceCode: '',
+  districtCode: '',
+  wardCode: '',
   is_default: false,
 };
 
-/** Reverse-lookup province/district/ward IDs from saved text names */
-function resolveIds(city: string, district: string) {
-  let provinceId = '';
-  let districtId = '';
-  for (const p of provincesData) {
+/** Reverse-lookup province/district codes from saved text names */
+function resolveCodesFromNames(
+  provinces: { code: number; name: string; districts: { code: number; name: string }[] }[],
+  city: string,
+  district: string,
+) {
+  let provinceCode = '';
+  let districtCode = '';
+  for (const p of provinces) {
     if (p.name === city) {
-      provinceId = p.id;
+      provinceCode = String(p.code);
       for (const d of p.districts) {
         if (d.name === district) {
-          districtId = d.id;
+          districtCode = String(d.code);
           break;
         }
       }
       break;
     }
   }
-  return { provinceId, districtId };
+  return { provinceCode, districtCode };
 }
 
 export default function AddressManagementPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, profile, mockUser } = useAuth();
   const { data: addresses = [], isLoading } = useAddresses();
   const createAddr = useCreateAddress();
   const updateAddr = useUpdateAddress();
   const deleteAddr = useDeleteAddress();
   const setDefault = useSetDefaultAddress();
 
+  const { provinces, isLoading: provincesLoading, error: provincesError } = useProvinces();
+
   const [view, setView] = useState<'list' | 'form'>('list');
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
 
   // Derived cascading lists
-  const selectedProvince = useMemo(() => provincesData.find(p => p.id === form.provinceId), [form.provinceId]);
-  const availableDistricts = useMemo(() => selectedProvince?.districts ?? [], [selectedProvince]);
-  const selectedDistrict = useMemo(() => availableDistricts.find(d => d.id === form.districtId), [availableDistricts, form.districtId]);
-  const availableWards = useMemo(() => selectedDistrict?.wards ?? [], [selectedDistrict]);
+  const availableDistricts = useDistricts(form.provinceCode);
+  const availableWards = useWards(form.provinceCode, form.districtCode);
+
+  const selectedProvinceName = useMemo(() => provinces.find(p => String(p.code) === form.provinceCode)?.name ?? '', [provinces, form.provinceCode]);
+  const selectedDistrictName = useMemo(() => availableDistricts.find(d => String(d.code) === form.districtCode)?.name ?? '', [availableDistricts, form.districtCode]);
+  const selectedWardName = useMemo(() => availableWards.find(w => String(w.code) === form.wardCode)?.name ?? '', [availableWards, form.wardCode]);
+
+  // Auto-fill default user info when opening ADD form
+  const getAutoFillName = () => {
+    if (profile?.display_name) return profile.display_name;
+    if (mockUser?.name) return mockUser.name;
+    return '';
+  };
+
+  const getAutoFillPhone = () => {
+    if (profile?.phone) return profile.phone;
+    return '';
+  };
 
   const openAdd = () => {
     setEditId(null);
-    setForm({ ...emptyForm, is_default: addresses.length === 0 });
+    setForm({
+      ...emptyForm,
+      recipient_name: getAutoFillName(),
+      phone: getAutoFillPhone(),
+      is_default: addresses.length === 0,
+    });
     setView('form');
   };
 
   const openEdit = (a: Address) => {
-    const { provinceId, districtId } = resolveIds(a.city, a.district);
+    const { provinceCode, districtCode } = resolveCodesFromNames(provinces, a.city, a.district);
     setEditId(a.id);
     setForm({
       label: a.label,
       recipient_name: a.recipient_name,
       phone: a.phone,
       address_line: a.address_line,
-      provinceId,
-      districtId,
-      wardId: '', // ward is embedded in address_line or not separately stored
+      provinceCode,
+      districtCode,
+      wardCode: '',
       is_default: a.is_default,
     });
     setView('form');
   };
 
-  const handleProvinceChange = (id: string) => {
-    setForm(f => ({ ...f, provinceId: id, districtId: '', wardId: '' }));
+  const handleProvinceChange = (code: string) => {
+    setForm(f => ({ ...f, provinceCode: code, districtCode: '', wardCode: '' }));
   };
 
-  const handleDistrictChange = (id: string) => {
-    setForm(f => ({ ...f, districtId: id, wardId: '' }));
+  const handleDistrictChange = (code: string) => {
+    setForm(f => ({ ...f, districtCode: code, wardCode: '' }));
   };
 
-  const handleWardChange = (id: string) => {
-    setForm(f => ({ ...f, wardId: id }));
+  const handleWardChange = (code: string) => {
+    setForm(f => ({ ...f, wardCode: code }));
   };
 
   const handleSave = async () => {
@@ -118,16 +143,12 @@ export default function AddressManagementPage() {
       toast.warning('Số điện thoại không hợp lệ');
       return;
     }
-    if (!form.provinceId || !form.districtId || !form.wardId) {
+    if (!form.provinceCode || !form.districtCode || !form.wardCode) {
       toast.warning('Vui lòng chọn đầy đủ Tỉnh/Thành, Quận/Huyện và Phường/Xã');
       return;
     }
 
-    const provinceName = selectedProvince?.name ?? '';
-    const districtName = selectedDistrict?.name ?? '';
-    const wardName = availableWards.find(w => w.id === form.wardId)?.name ?? '';
-
-    const fullAddressLine = [form.address_line.trim(), wardName].filter(Boolean).join(', ');
+    const fullAddressLine = [form.address_line.trim(), selectedWardName].filter(Boolean).join(', ');
 
     try {
       const payload = {
@@ -135,8 +156,8 @@ export default function AddressManagementPage() {
         recipient_name: form.recipient_name.trim(),
         phone: form.phone.trim(),
         address_line: fullAddressLine,
-        district: districtName,
-        city: provinceName,
+        district: selectedDistrictName,
+        city: selectedProvinceName,
         is_default: form.is_default,
       };
 
@@ -147,12 +168,10 @@ export default function AddressManagementPage() {
         }
         toast.success('Cập nhật địa chỉ thành công');
       } else {
-        // Auto-set as default if this is the first address
         const shouldBeDefault = form.is_default || addresses.length === 0;
         await createAddr.mutateAsync({ ...payload, is_default: shouldBeDefault, user_id: user!.id });
         toast.success('Thêm địa chỉ thành công');
       }
-      // Reset form and return to list
       setForm({ ...emptyForm });
       setEditId(null);
       setView('list');
@@ -279,17 +298,21 @@ export default function AddressManagementPage() {
                 className="w-full rounded-lg border border-border bg-background px-4 py-3 font-body text-sm focus:outline-none focus:ring-1 focus:ring-primary"
               />
 
-              {/* Cascading address selects */}
+              {/* Cascading address selects from real API */}
               <div className="space-y-3">
+                {provincesError && (
+                  <p className="font-body text-xs text-destructive">{provincesError}</p>
+                )}
+
                 <div>
                   <label className="font-body text-xs text-muted-foreground mb-1.5 block">Tỉnh/Thành phố *</label>
-                  <Select value={form.provinceId} onValueChange={handleProvinceChange}>
+                  <Select value={form.provinceCode} onValueChange={handleProvinceChange} disabled={provincesLoading}>
                     <SelectTrigger className="w-full rounded-lg border-border bg-background font-body text-sm">
-                      <SelectValue placeholder="Chọn Tỉnh/Thành phố" />
+                      <SelectValue placeholder={provincesLoading ? 'Đang tải...' : 'Chọn Tỉnh/Thành phố'} />
                     </SelectTrigger>
-                    <SelectContent>
-                      {provincesData.map(p => (
-                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                    <SelectContent className="max-h-60">
+                      {provinces.map(p => (
+                        <SelectItem key={p.code} value={String(p.code)}>{p.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -298,16 +321,16 @@ export default function AddressManagementPage() {
                 <div>
                   <label className="font-body text-xs text-muted-foreground mb-1.5 block">Quận/Huyện *</label>
                   <Select
-                    value={form.districtId}
+                    value={form.districtCode}
                     onValueChange={handleDistrictChange}
-                    disabled={!form.provinceId}
+                    disabled={!form.provinceCode}
                   >
                     <SelectTrigger className="w-full rounded-lg border-border bg-background font-body text-sm disabled:opacity-50">
-                      <SelectValue placeholder={form.provinceId ? 'Chọn Quận/Huyện' : 'Chọn Tỉnh/Thành trước'} />
+                      <SelectValue placeholder={form.provinceCode ? 'Chọn Quận/Huyện' : 'Chọn Tỉnh/Thành trước'} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-60">
                       {availableDistricts.map(d => (
-                        <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                        <SelectItem key={d.code} value={String(d.code)}>{d.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -316,16 +339,16 @@ export default function AddressManagementPage() {
                 <div>
                   <label className="font-body text-xs text-muted-foreground mb-1.5 block">Phường/Xã *</label>
                   <Select
-                    value={form.wardId}
+                    value={form.wardCode}
                     onValueChange={handleWardChange}
-                    disabled={!form.districtId}
+                    disabled={!form.districtCode}
                   >
                     <SelectTrigger className="w-full rounded-lg border-border bg-background font-body text-sm disabled:opacity-50">
-                      <SelectValue placeholder={form.districtId ? 'Chọn Phường/Xã' : 'Chọn Quận/Huyện trước'} />
+                      <SelectValue placeholder={form.districtCode ? 'Chọn Phường/Xã' : 'Chọn Quận/Huyện trước'} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-60">
                       {availableWards.map(w => (
-                        <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                        <SelectItem key={w.code} value={String(w.code)}>{w.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
