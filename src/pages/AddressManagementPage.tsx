@@ -147,9 +147,14 @@ export default function AddressManagementPage() {
         }
         toast.success('Cập nhật địa chỉ thành công');
       } else {
-        await createAddr.mutateAsync({ ...payload, user_id: user!.id });
+        // Auto-set as default if this is the first address
+        const shouldBeDefault = form.is_default || addresses.length === 0;
+        await createAddr.mutateAsync({ ...payload, is_default: shouldBeDefault, user_id: user!.id });
         toast.success('Thêm địa chỉ thành công');
       }
+      // Reset form and return to list
+      setForm({ ...emptyForm });
+      setEditId(null);
       setView('list');
     } catch {
       toast.error('Có lỗi xảy ra');

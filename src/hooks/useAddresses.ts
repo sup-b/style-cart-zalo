@@ -36,10 +36,7 @@ export function useCreateAddress() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (addr: Omit<Address, 'id' | 'created_at' | 'user_id'> & { user_id: string }) => {
-      if (addr.is_default) {
-        await supabase.rpc('set_default_address', { p_address_id: '00000000-0000-0000-0000-000000000000', p_user_id: addr.user_id });
-      }
-      const { error } = await supabase.from('addresses').insert({
+      const { data, error } = await supabase.from('addresses').insert({
         user_id: addr.user_id,
         label: addr.label,
         recipient_name: addr.recipient_name,
@@ -47,9 +44,18 @@ export function useCreateAddress() {
         address_line: addr.address_line,
         district: addr.district,
         city: addr.city,
-        is_default: addr.is_default,
-      });
+        is_default: false, // insert as non-default first
+      }).select('id').single();
       if (error) throw error;
+
+      // Now set as default if requested (this unsets others via the DB function)
+      if (addr.is_default && data?.id) {
+        const { error: defErr } = await supabase.rpc('set_default_address', {
+          p_address_id: data.id,
+          p_user_id: addr.user_id,
+        });
+        if (defErr) throw defErr;
+      }
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['addresses'] }),
   });
