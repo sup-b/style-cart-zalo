@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { categories, formatPrice } from '@/data/products';
 import { Search, SearchX, SlidersHorizontal, X } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
@@ -13,7 +14,8 @@ const allSizes = ['S', 'M', 'L', 'XL'];
 
 export default function ProductsPage() {
   const { data: products = [], isLoading } = useProducts();
-  const [search, setSearch] = useState('');
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('q') || '');
   const debouncedSearch = useDebounce(search, 300);
   const [category, setCategory] = useState<string>('');
   const [priceRange, setPriceRange] = useState([0, 3000000]);
