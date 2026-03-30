@@ -123,16 +123,16 @@ export default function AddressManagementPage() {
   };
 
   const openEdit = (a: Address) => {
-    const { provinceCode, districtCode } = resolveCodesFromNames(provinces, a.city, a.district);
+    const { provinceCode, districtCode, wardCode, cleanAddressLine } = resolveCodesFromNames(provinces, a.city, a.district, a.address_line);
     setEditId(a.id);
     setForm({
       label: a.label,
       recipient_name: a.recipient_name,
       phone: a.phone,
-      address_line: a.address_line,
+      address_line: cleanAddressLine,
       provinceCode,
       districtCode,
-      wardCode: '',
+      wardCode,
       is_default: a.is_default,
     });
     setView('form');
