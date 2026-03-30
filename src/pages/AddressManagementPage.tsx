@@ -3,7 +3,7 @@ import { ArrowLeft, Plus, MapPin, Trash2, Star, Pencil, Home, Building2, Briefca
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useAddresses, useCreateAddress, useUpdateAddress, useDeleteAddress, useSetDefaultAddress, type Address } from '@/hooks/useAddresses';
-import { useProvinces, useDistricts, useWards } from '@/hooks/useProvinces';
+import { useProvinces, useDistricts, useWards, type Province } from '@/hooks/useProvinces';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
