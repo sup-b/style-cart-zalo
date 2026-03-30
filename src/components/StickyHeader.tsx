@@ -1,11 +1,21 @@
 import { useState, useEffect } from 'react';
 import { Search, ShoppingBag, MessageCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 
 export default function StickyHeader() {
   const [scrolled, setScrolled] = useState(false);
   const { totalItems } = useCart();
+  const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState('');
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchInput.trim()) {
+      navigate(`/products?q=${encodeURIComponent(searchInput.trim())}`);
+      setSearchInput('');
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -28,12 +38,14 @@ export default function StickyHeader() {
         </Link>
 
         {/* Search bar */}
-        <div className="relative flex-1">
+        <form onSubmit={handleSearchSubmit} className="relative flex-1">
           <Search className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 ${
             scrolled ? 'text-muted-foreground' : 'text-white/60'
           }`} strokeWidth={1.5} />
           <input
             type="text"
+            value={searchInput}
+            onChange={e => setSearchInput(e.target.value)}
             placeholder="Tìm kiếm bộ sưu tập mới..."
             className={`w-full rounded-md py-2 pl-9 pr-3 font-body text-xs transition-colors ${
               scrolled
@@ -41,7 +53,7 @@ export default function StickyHeader() {
                 : 'bg-white/15 text-white placeholder:text-white/50 backdrop-blur-sm'
             } border-0 outline-none focus:ring-1 focus:ring-foreground/20`}
           />
-        </div>
+        </form>
 
         {/* Icons */}
         <Link to="/cart" className="relative shrink-0">

@@ -2,6 +2,7 @@ import { useState, useMemo, useRef, useEffect } from 'react';
 import { Check, ChevronsUpDown, Search } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { vietnameseSearch } from '@/utils/stringUtils';
 
 type Option = { value: string; label: string };
 
@@ -30,8 +31,7 @@ export default function SearchableSelect({
 
   const filtered = useMemo(() => {
     if (!search.trim()) return options;
-    const q = search.toLowerCase().trim();
-    return options.filter(o => o.label.toLowerCase().includes(q));
+    return options.filter(o => vietnameseSearch(o.label, search));
   }, [options, search]);
 
   const selectedLabel = options.find(o => o.value === value)?.label;
