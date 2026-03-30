@@ -7,7 +7,7 @@ import { useProvinces, useDistricts, useWards } from '@/hooks/useProvinces';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import SearchableSelect from '@/components/SearchableSelect';
 
 const labelOptions = [
   { value: 'Nhà', icon: Home },
@@ -306,52 +306,38 @@ export default function AddressManagementPage() {
 
                 <div>
                   <label className="font-body text-xs text-muted-foreground mb-1.5 block">Tỉnh/Thành phố *</label>
-                  <Select value={form.provinceCode} onValueChange={handleProvinceChange} disabled={provincesLoading}>
-                    <SelectTrigger className="w-full rounded-lg border-border bg-background font-body text-sm">
-                      <SelectValue placeholder={provincesLoading ? 'Đang tải...' : 'Chọn Tỉnh/Thành phố'} />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-60">
-                      {provinces.map(p => (
-                        <SelectItem key={p.code} value={String(p.code)}>{p.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <SearchableSelect
+                    options={provinces.map(p => ({ value: String(p.code), label: p.name }))}
+                    value={form.provinceCode}
+                    onValueChange={handleProvinceChange}
+                    placeholder={provincesLoading ? 'Đang tải...' : 'Chọn Tỉnh/Thành phố'}
+                    searchPlaceholder="Tìm tỉnh/thành phố..."
+                    disabled={provincesLoading}
+                  />
                 </div>
 
                 <div>
                   <label className="font-body text-xs text-muted-foreground mb-1.5 block">Quận/Huyện *</label>
-                  <Select
+                  <SearchableSelect
+                    options={availableDistricts.map(d => ({ value: String(d.code), label: d.name }))}
                     value={form.districtCode}
                     onValueChange={handleDistrictChange}
+                    placeholder={form.provinceCode ? 'Chọn Quận/Huyện' : 'Chọn Tỉnh/Thành trước'}
+                    searchPlaceholder="Tìm quận/huyện..."
                     disabled={!form.provinceCode}
-                  >
-                    <SelectTrigger className="w-full rounded-lg border-border bg-background font-body text-sm disabled:opacity-50">
-                      <SelectValue placeholder={form.provinceCode ? 'Chọn Quận/Huyện' : 'Chọn Tỉnh/Thành trước'} />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-60">
-                      {availableDistricts.map(d => (
-                        <SelectItem key={d.code} value={String(d.code)}>{d.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  />
                 </div>
 
                 <div>
                   <label className="font-body text-xs text-muted-foreground mb-1.5 block">Phường/Xã *</label>
-                  <Select
+                  <SearchableSelect
+                    options={availableWards.map(w => ({ value: String(w.code), label: w.name }))}
                     value={form.wardCode}
                     onValueChange={handleWardChange}
+                    placeholder={form.districtCode ? 'Chọn Phường/Xã' : 'Chọn Quận/Huyện trước'}
+                    searchPlaceholder="Tìm phường/xã..."
                     disabled={!form.districtCode}
-                  >
-                    <SelectTrigger className="w-full rounded-lg border-border bg-background font-body text-sm disabled:opacity-50">
-                      <SelectValue placeholder={form.districtCode ? 'Chọn Phường/Xã' : 'Chọn Quận/Huyện trước'} />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-60">
-                      {availableWards.map(w => (
-                        <SelectItem key={w.code} value={String(w.code)}>{w.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  />
                 </div>
               </div>
 
