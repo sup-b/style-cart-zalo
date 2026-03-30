@@ -1,17 +1,20 @@
 import { useState, useMemo } from 'react';
 import { categories, formatPrice } from '@/data/products';
-import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { Search, SearchX, SlidersHorizontal, X } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Slider } from '@/components/ui/slider';
 import { useProducts } from '@/hooks/useProducts';
 import { Skeleton } from '@/components/ui/skeleton';
+import { vietnameseSearch } from '@/utils/stringUtils';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const allSizes = ['S', 'M', 'L', 'XL'];
 
 export default function ProductsPage() {
   const { data: products = [], isLoading } = useProducts();
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
   const [category, setCategory] = useState<string>('');
   const [priceRange, setPriceRange] = useState([0, 3000000]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
@@ -20,7 +23,7 @@ export default function ProductsPage() {
   const allColors = useMemo(() => [...new Set(products.flatMap(p => p.colors.map(c => c.name)))], [products]);
 
   const filtered = products.filter(p => {
-    if (search && !p.nameVi.toLowerCase().includes(search.toLowerCase()) && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
+    if (debouncedSearch && !vietnameseSearch(p.nameVi, debouncedSearch) && !vietnameseSearch(p.name, debouncedSearch)) return false;
     if (category && p.category !== category) return false;
     if (p.price < priceRange[0] || p.price > priceRange[1]) return false;
     if (selectedColors.length && !p.colors.some(c => selectedColors.includes(c.name))) return false;
@@ -103,7 +106,16 @@ export default function ProductsPage() {
           <div className="grid grid-cols-2 gap-3 p-4">
             {filtered.map(p => <div key={p.id} className="relative"><ProductCard product={p} /></div>)}
           </div>
-          {filtered.length === 0 && <div className="py-20 text-center"><p className="text-muted-foreground font-body text-sm">Không tìm thấy sản phẩm phù hợp</p></div>}
+          {filtered.length === 0 && (
+            <div className="py-20 text-center flex flex-col items-center gap-2">
+              <SearchX className="h-10 w-10 text-muted-foreground/50" strokeWidth={1.5} />
+              <p className="text-muted-foreground font-body text-sm">
+                {debouncedSearch
+                  ? `Không tìm thấy kết quả phù hợp với "${debouncedSearch}".`
+                  : 'Không tìm thấy sản phẩm phù hợp'}
+              </p>
+            </div>
+          )}
         </>
       )}
     </div>
