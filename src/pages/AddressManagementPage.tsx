@@ -3,7 +3,7 @@ import { ArrowLeft, Plus, MapPin, Trash2, Star, Pencil, Home, Building2, Briefca
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useAddresses, useCreateAddress, useUpdateAddress, useDeleteAddress, useSetDefaultAddress, type Address } from '@/hooks/useAddresses';
-import { useProvinces, useDistricts, useWards } from '@/hooks/useProvinces';
+import { useProvinces, useDistricts, useWards, type Province } from '@/hooks/useProvinces';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -37,27 +37,43 @@ const emptyForm: FormState = {
   is_default: false,
 };
 
-/** Reverse-lookup province/district codes from saved text names */
+/** Reverse-lookup province/district/ward codes from saved text names */
 function resolveCodesFromNames(
-  provinces: { code: number; name: string; districts: { code: number; name: string }[] }[],
+  provinces: Province[],
   city: string,
   district: string,
+  addressLine: string,
 ) {
   let provinceCode = '';
   let districtCode = '';
+  let wardCode = '';
+  let cleanAddressLine = addressLine;
+
   for (const p of provinces) {
     if (p.name === city) {
       provinceCode = String(p.code);
       for (const d of p.districts) {
         if (d.name === district) {
           districtCode = String(d.code);
+          // Try to find ward name from the saved address_line
+          for (const w of d.wards) {
+            if (addressLine.includes(w.name)) {
+              wardCode = String(w.code);
+              // Remove ward name from address_line to get the clean specific address
+              cleanAddressLine = addressLine
+                .replace(new RegExp(',\\s*' + w.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$'), '')
+                .replace(new RegExp('^' + w.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ',\\s*'), '')
+                .trim();
+              break;
+            }
+          }
           break;
         }
       }
       break;
     }
   }
-  return { provinceCode, districtCode };
+  return { provinceCode, districtCode, wardCode, cleanAddressLine };
 }
 
 export default function AddressManagementPage() {
@@ -107,16 +123,16 @@ export default function AddressManagementPage() {
   };
 
   const openEdit = (a: Address) => {
-    const { provinceCode, districtCode } = resolveCodesFromNames(provinces, a.city, a.district);
+    const { provinceCode, districtCode, wardCode, cleanAddressLine } = resolveCodesFromNames(provinces, a.city, a.district, a.address_line);
     setEditId(a.id);
     setForm({
       label: a.label,
       recipient_name: a.recipient_name,
       phone: a.phone,
-      address_line: a.address_line,
+      address_line: cleanAddressLine,
       provinceCode,
       districtCode,
-      wardCode: '',
+      wardCode,
       is_default: a.is_default,
     });
     setView('form');
