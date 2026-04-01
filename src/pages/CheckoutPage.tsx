@@ -13,6 +13,7 @@ import CheckoutActionBar from '@/components/CheckoutActionBar';
 import {
   Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription,
 } from '@/components/ui/drawer';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function calculateShippingFee(address: Address | null, subTotal: number): number {
   if (!address) return 0;
