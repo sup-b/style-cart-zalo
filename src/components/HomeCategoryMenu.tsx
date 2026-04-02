@@ -1,4 +1,4 @@
-import { Shirt, Briefcase, Sparkles, Watch, ShoppingBag, Tag, Gem, Heart } from 'lucide-react';
+import { Shirt, Scissors, Flower2, Watch, ShoppingBag, Tag, Gem, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 
@@ -11,12 +11,12 @@ type CategoryLink = {
 
 const categoryLinks: CategoryLink[] = [
   { id: 'ao', name: 'Áo', icon: Shirt, href: '/categories?cat=ao' },
-  { id: 'quan', name: 'Quần', icon: Briefcase, href: '/categories?cat=quan' },
-  { id: 'vay', name: 'Váy đầm', icon: Sparkles, href: '/categories?cat=vay' },
+  { id: 'quan', name: 'Quần', icon: Scissors, href: '/categories?cat=quan' },
+  { id: 'vay', name: 'Váy đầm', icon: Flower2, href: '/categories?cat=vay' },
   { id: 'phukien', name: 'Phụ kiện', icon: Watch, href: '/categories?cat=phukien' },
   { id: 'tuixach', name: 'Túi xách', icon: ShoppingBag, href: '/categories?cat=phukien' },
   { id: 'trangsuc', name: 'Trang sức', icon: Gem, href: '/categories?cat=phukien' },
-  { id: 'new', name: 'Hàng mới', icon: Heart, href: '/products?filter=new' },
+  { id: 'new', name: 'Hàng mới', icon: Sparkles, href: '/products?filter=new' },
   { id: 'sale', name: 'Khuyến mãi', icon: Tag, href: '/products?filter=sale' },
 ];
 
