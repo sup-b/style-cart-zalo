@@ -1,4 +1,5 @@
-import { Shirt, Scissors, Flower2, Watch, ShoppingBag, Tag, Gem, Sparkles } from 'lucide-react';
+import { Shirt, Watch, ShoppingBag, Tag, Sparkles, Icon } from 'lucide-react';
+import { trousers, dress, necklace } from '@lucide/lab';
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 

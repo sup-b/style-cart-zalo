@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { formatPrice } from '@/data/products';
-import { Shirt, Scissors, Flower2, Watch, ShoppingBag, Tag, Gem, Sparkles, Search, X, ArrowUpDown } from 'lucide-react';
+import { Shirt, Watch, ShoppingBag, Tag, Sparkles, Search, X, ArrowUpDown, Icon } from 'lucide-react';
+import { trousers, dress, necklace } from '@lucide/lab';
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
