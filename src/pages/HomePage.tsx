@@ -1,6 +1,7 @@
 import StickyHeader from '@/components/StickyHeader';
 import HeroSlider from '@/components/HeroSlider';
 import QuickLinksMenu from '@/components/QuickLinksMenu';
+import VoucherSection from '@/components/VoucherSection';
 import HotDrops from '@/components/HotDrops';
 import ProductFeed from '@/components/ProductFeed';
 
@@ -10,6 +11,7 @@ export default function HomePage() {
       <StickyHeader />
       <HeroSlider />
       <QuickLinksMenu />
+      <VoucherSection />
       <HotDrops />
 
       {/* Divider */}
