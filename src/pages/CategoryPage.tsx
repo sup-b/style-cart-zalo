@@ -19,12 +19,12 @@ type CategoryLink = {
 
 const categoryLinks: CategoryLink[] = [
   { id: 'ao', name: 'Áo', icon: Shirt, type: 'category', value: 'ao' },
-  { id: 'quan', name: 'Quần', icon: Briefcase, type: 'category', value: 'quan' },
-  { id: 'vay', name: 'Váy đầm', icon: Sparkles, type: 'category', value: 'vay' },
+  { id: 'quan', name: 'Quần', icon: Scissors, type: 'category', value: 'quan' },
+  { id: 'vay', name: 'Váy đầm', icon: Flower2, type: 'category', value: 'vay' },
   { id: 'phukien', name: 'Phụ kiện', icon: Watch, type: 'category', value: 'phukien' },
   { id: 'tuixach', name: 'Túi xách', icon: ShoppingBag, type: 'category', value: 'Túi xách' },
   { id: 'trangsuc', name: 'Trang sức', icon: Gem, type: 'category', value: 'Trang sức' },
-  { id: 'new', name: 'Hàng mới', icon: Heart, type: 'tag', value: 'Hàng mới' },
+  { id: 'new', name: 'Hàng mới', icon: Sparkles, type: 'tag', value: 'Hàng mới' },
   { id: 'sale', name: 'Khuyến mãi', icon: Tag, type: 'sale', value: 'sale' },
 ];
 

@@ -1,4 +1,4 @@
-import { Shirt, Briefcase, Sparkles, Watch, ShoppingBag, Tag, Gem, Heart } from 'lucide-react';
+import { Shirt, Scissors, Flower2, Watch, ShoppingBag, Tag, Gem, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 
