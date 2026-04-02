@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
 import { formatPrice } from '@/data/products';
-import { Shirt, Scissors, Flower2, Watch, ShoppingBag, Tag, Gem, Sparkles, Search, X, ArrowUpDown } from 'lucide-react';
+import { Shirt, Watch, ShoppingBag, Tag, Sparkles, Search, X, ArrowUpDown, Icon } from 'lucide-react';
+import { trousers, dress, gemRing } from '@lucide/lab';
 import { Link } from 'react-router-dom';
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon, IconNode } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { mockProducts, filterByTag } from '@/data/mockData';
 import ProductGrid from '@/components/ProductGrid';
@@ -12,18 +13,19 @@ import { Skeleton } from '@/components/ui/skeleton';
 type CategoryLink = {
   id: string;
   name: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
+  labIcon?: IconNode;
   type: 'category' | 'tag' | 'sale';
   value: string;
 };
 
 const categoryLinks: CategoryLink[] = [
   { id: 'ao', name: 'Áo', icon: Shirt, type: 'category', value: 'ao' },
-  { id: 'quan', name: 'Quần', icon: Scissors, type: 'category', value: 'quan' },
-  { id: 'vay', name: 'Váy đầm', icon: Flower2, type: 'category', value: 'vay' },
+  { id: 'quan', name: 'Quần', labIcon: trousers, type: 'category', value: 'quan' },
+  { id: 'vay', name: 'Váy đầm', labIcon: dress, type: 'category', value: 'vay' },
   { id: 'phukien', name: 'Phụ kiện', icon: Watch, type: 'category', value: 'phukien' },
   { id: 'tuixach', name: 'Túi xách', icon: ShoppingBag, type: 'category', value: 'Túi xách' },
-  { id: 'trangsuc', name: 'Trang sức', icon: Gem, type: 'category', value: 'Trang sức' },
+  { id: 'trangsuc', name: 'Trang sức', labIcon: gemRing, type: 'category', value: 'Trang sức' },
   { id: 'new', name: 'Hàng mới', icon: Sparkles, type: 'tag', value: 'Hàng mới' },
   { id: 'sale', name: 'Khuyến mãi', icon: Tag, type: 'sale', value: 'sale' },
 ];
@@ -145,7 +147,7 @@ export default function CategoryPage() {
       {/* Category Grid */}
       <div className="px-4 py-5">
         <div className="grid grid-cols-4 gap-x-2 gap-y-4">
-          {categoryLinks.map(({ id, name, icon: Icon }) => {
+          {categoryLinks.map(({ id, name, icon: RegularIcon, labIcon }) => {
             const isActive = activeCategory === id;
             return (
               <button
@@ -158,10 +160,18 @@ export default function CategoryPage() {
                     ? 'bg-foreground ring-2 ring-foreground/20'
                     : 'bg-[#f8f6f2]'
                 }`}>
-                  <Icon
-                    className={`h-6 w-6 transition-colors ${isActive ? 'text-background' : 'text-foreground/70'}`}
-                    strokeWidth={1.2}
-                  />
+                  {labIcon ? (
+                    <Icon
+                      iconNode={labIcon}
+                      className={`h-6 w-6 transition-colors ${isActive ? 'text-background' : 'text-foreground/70'}`}
+                      strokeWidth={1.2}
+                    />
+                  ) : RegularIcon ? (
+                    <RegularIcon
+                      className={`h-6 w-6 transition-colors ${isActive ? 'text-background' : 'text-foreground/70'}`}
+                      strokeWidth={1.2}
+                    />
+                  ) : null}
                 </div>
                 <span className={`w-full truncate text-center font-body text-[11px] transition-colors ${
                   isActive ? 'text-foreground font-semibold' : 'text-muted-foreground'
