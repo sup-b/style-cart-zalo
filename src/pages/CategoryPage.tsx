@@ -3,7 +3,7 @@ import { formatPrice } from '@/data/products';
 import { Shirt, Watch, ShoppingBag, Tag, Sparkles, Search, X, ArrowUpDown, Icon } from 'lucide-react';
 import { trousers, dress, gemRing } from '@lucide/lab';
 import { Link } from 'react-router-dom';
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon, IconNode } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { mockProducts, filterByTag } from '@/data/mockData';
 import ProductGrid from '@/components/ProductGrid';
@@ -13,18 +13,19 @@ import { Skeleton } from '@/components/ui/skeleton';
 type CategoryLink = {
   id: string;
   name: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
+  labIcon?: IconNode;
   type: 'category' | 'tag' | 'sale';
   value: string;
 };
 
 const categoryLinks: CategoryLink[] = [
   { id: 'ao', name: 'Áo', icon: Shirt, type: 'category', value: 'ao' },
-  { id: 'quan', name: 'Quần', icon: Scissors, type: 'category', value: 'quan' },
-  { id: 'vay', name: 'Váy đầm', icon: Flower2, type: 'category', value: 'vay' },
+  { id: 'quan', name: 'Quần', labIcon: trousers, type: 'category', value: 'quan' },
+  { id: 'vay', name: 'Váy đầm', labIcon: dress, type: 'category', value: 'vay' },
   { id: 'phukien', name: 'Phụ kiện', icon: Watch, type: 'category', value: 'phukien' },
   { id: 'tuixach', name: 'Túi xách', icon: ShoppingBag, type: 'category', value: 'Túi xách' },
-  { id: 'trangsuc', name: 'Trang sức', icon: Gem, type: 'category', value: 'Trang sức' },
+  { id: 'trangsuc', name: 'Trang sức', labIcon: gemRing, type: 'category', value: 'Trang sức' },
   { id: 'new', name: 'Hàng mới', icon: Sparkles, type: 'tag', value: 'Hàng mới' },
   { id: 'sale', name: 'Khuyến mãi', icon: Tag, type: 'sale', value: 'sale' },
 ];
