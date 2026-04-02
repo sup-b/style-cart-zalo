@@ -147,7 +147,7 @@ export default function CategoryPage() {
       {/* Category Grid */}
       <div className="px-4 py-5">
         <div className="grid grid-cols-4 gap-x-2 gap-y-4">
-          {categoryLinks.map(({ id, name, icon: Icon }) => {
+          {categoryLinks.map(({ id, name, icon: RegularIcon, labIcon }) => {
             const isActive = activeCategory === id;
             return (
               <button
@@ -160,10 +160,18 @@ export default function CategoryPage() {
                     ? 'bg-foreground ring-2 ring-foreground/20'
                     : 'bg-[#f8f6f2]'
                 }`}>
-                  <Icon
-                    className={`h-6 w-6 transition-colors ${isActive ? 'text-background' : 'text-foreground/70'}`}
-                    strokeWidth={1.2}
-                  />
+                  {labIcon ? (
+                    <Icon
+                      iconNode={labIcon}
+                      className={`h-6 w-6 transition-colors ${isActive ? 'text-background' : 'text-foreground/70'}`}
+                      strokeWidth={1.2}
+                    />
+                  ) : RegularIcon ? (
+                    <RegularIcon
+                      className={`h-6 w-6 transition-colors ${isActive ? 'text-background' : 'text-foreground/70'}`}
+                      strokeWidth={1.2}
+                    />
+                  ) : null}
                 </div>
                 <span className={`w-full truncate text-center font-body text-[11px] transition-colors ${
                   isActive ? 'text-foreground font-semibold' : 'text-muted-foreground'
