@@ -203,6 +203,7 @@ const App = () => (
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
+            </VoucherProvider>
           </WishlistProvider>
         </CartProvider>
       </AuthProvider>
