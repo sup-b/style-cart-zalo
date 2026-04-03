@@ -4,22 +4,12 @@ import { toast } from 'sonner';
 import { useVoucher } from '@/context/VoucherContext';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
-
-export type VoucherDetail = {
-  id: string;
-  title: string;
-  condition: string;
-  type: 'freeship' | 'discount';
-  expDate: string;
-  code: string;
-  maxDiscount: string;
-  terms: string[];
-};
+import type { VoucherData } from '@/data/vouchers';
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  voucher: VoucherDetail | null;
+  voucher: VoucherData | null;
 };
 
 export default function VoucherDetailDrawer({ isOpen, onClose, voucher }: Props) {
@@ -63,7 +53,6 @@ export default function VoucherDetailDrawer({ isOpen, onClose, voucher }: Props)
         </DrawerHeader>
 
         <div className="px-4 pb-24 overflow-y-auto">
-          {/* Hero */}
           <div className={`flex flex-col items-center py-6 rounded-lg mt-4 ${isFreeship ? 'bg-blue-50' : 'bg-red-50'}`}>
             {isFreeship ? (
               <Truck className="w-12 h-12 text-blue-500 mb-2" />
@@ -74,7 +63,6 @@ export default function VoucherDetailDrawer({ isOpen, onClose, voucher }: Props)
             <p className="text-xs text-muted-foreground mt-1">HSD: {voucher.expDate}</p>
           </div>
 
-          {/* Code copy */}
           <div className="mt-4 flex items-center justify-between border border-dashed border-border rounded-lg bg-card px-4 py-3">
             <span className="font-mono font-bold text-base tracking-widest text-foreground">{voucher.code}</span>
             <Button variant="ghost" size="sm" onClick={handleCopy} className="gap-1.5 text-xs text-muted-foreground">
@@ -82,7 +70,6 @@ export default function VoucherDetailDrawer({ isOpen, onClose, voucher }: Props)
             </Button>
           </div>
 
-          {/* Terms */}
           <div className="mt-5">
             <p className="font-semibold text-sm text-foreground mb-2">Điều kiện áp dụng</p>
             <ul className="space-y-1.5">
@@ -96,7 +83,6 @@ export default function VoucherDetailDrawer({ isOpen, onClose, voucher }: Props)
           </div>
         </div>
 
-        {/* Bottom action */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border bg-background">
           <Button onClick={handleAction} className="w-full" variant={saved ? 'outline' : 'default'}>
             {saved ? 'Dùng ngay' : 'Lưu Mã'}
