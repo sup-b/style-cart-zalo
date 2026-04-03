@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { ALL_VOUCHERS, type VoucherData } from '@/data/vouchers';
 
 type VoucherContextType = {
   savedVoucherIds: string[];
   saveVoucher: (id: string) => void;
   isVoucherSaved: (id: string) => boolean;
+  getSavedVouchers: () => VoucherData[];
 };
 
 const VoucherContext = createContext<VoucherContextType | undefined>(undefined);
@@ -22,8 +24,12 @@ export function VoucherProvider({ children }: { children: React.ReactNode }) {
     return savedVoucherIds.includes(id);
   }, [savedVoucherIds]);
 
+  const getSavedVouchers = useCallback(() => {
+    return ALL_VOUCHERS.filter((v) => savedVoucherIds.includes(v.id));
+  }, [savedVoucherIds]);
+
   return (
-    <VoucherContext.Provider value={{ savedVoucherIds, saveVoucher, isVoucherSaved }}>
+    <VoucherContext.Provider value={{ savedVoucherIds, saveVoucher, isVoucherSaved, getSavedVouchers }}>
       {children}
     </VoucherContext.Provider>
   );
