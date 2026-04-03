@@ -2,18 +2,13 @@ import { useState } from 'react';
 import { Truck, Ticket } from 'lucide-react';
 import { useVoucher } from '@/context/VoucherContext';
 import { toast } from 'sonner';
-import VoucherDetailDrawer, { type VoucherDetail } from '@/components/VoucherDetailDrawer';
-
-const homeVouchers: VoucherDetail[] = [
-  { id: 'v1', title: 'Freeship', condition: 'Đơn tối thiểu 99K', type: 'freeship', expDate: '30/04/2026', code: 'FREESHIP99', maxDiscount: '30.000đ', terms: ['Đơn tối thiểu 99.000đ', 'Giảm tối đa phí ship 30.000đ', 'Áp dụng cho mọi sản phẩm'] },
-  { id: 'v2', title: 'Giảm 20K', condition: 'Đơn tối thiểu 150K', type: 'discount', expDate: '15/05/2026', code: 'MUAHE20K', maxDiscount: '20.000đ', terms: ['Đơn tối thiểu 150.000đ', 'Giảm tối đa 20.000đ', 'Áp dụng cho mọi sản phẩm'] },
-  { id: 'v3', title: 'Giảm 50K', condition: 'Đơn tối thiểu 350K', type: 'discount', expDate: '20/05/2026', code: 'SALE50K', maxDiscount: '50.000đ', terms: ['Đơn tối thiểu 350.000đ', 'Giảm tối đa 50.000đ', 'Chỉ áp dụng cho đơn hàng đầu tiên'] },
-  { id: 'v4', title: 'Freeship Extra', condition: 'Đơn tối thiểu 200K', type: 'freeship', expDate: '10/06/2026', code: 'FREEEXTRA', maxDiscount: '50.000đ', terms: ['Đơn tối thiểu 200.000đ', 'Miễn phí vận chuyển toàn quốc', 'Áp dụng cho mọi sản phẩm'] },
-];
+import { ALL_VOUCHERS } from '@/data/vouchers';
+import VoucherDetailDrawer from '@/components/VoucherDetailDrawer';
+import type { VoucherData } from '@/data/vouchers';
 
 export default function VoucherSection() {
   const { saveVoucher, isVoucherSaved } = useVoucher();
-  const [selectedVoucher, setSelectedVoucher] = useState<VoucherDetail | null>(null);
+  const [selectedVoucher, setSelectedVoucher] = useState<VoucherData | null>(null);
 
   const handleSave = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -31,7 +26,7 @@ export default function VoucherSection() {
       </div>
 
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-        {homeVouchers.map((v) => {
+        {ALL_VOUCHERS.map((v) => {
           const saved = isVoucherSaved(v.id);
           const isFreeship = v.type === 'freeship';
 
