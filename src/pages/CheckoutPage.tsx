@@ -166,14 +166,28 @@ export default function CheckoutPage() {
             <span className="font-body text-sm text-muted-foreground">Tạm tính</span>
             <span className="font-body text-sm">{formatPrice(totalPrice)}</span>
           </div>
-          {discount > 0 && (
+          {orderDiscount > 0 && (
             <div className="flex justify-between">
               <span className="font-body text-sm text-green-600">Giảm giá ({appliedCoupon?.code})</span>
-              <span className="font-body text-sm font-medium text-green-600">-{formatPrice(discount)}</span>
+              <span className="font-body text-sm font-medium text-green-600">-{formatPrice(orderDiscount)}</span>
             </div>
           )}
           <div className="flex justify-between">
             <span className="font-body text-sm text-muted-foreground">Phí vận chuyển</span>
+            <span className="font-body text-sm">
+              {!selectedAddress
+                ? <span className="text-muted-foreground italic text-xs">Chọn địa chỉ</span>
+                : shippingFee === 0
+                  ? <span className="text-green-600 font-medium">Miễn phí</span>
+                  : formatPrice(shippingFee)}
+            </span>
+          </div>
+          {shippingDiscount > 0 && (
+            <div className="flex justify-between">
+              <span className="font-body text-sm text-blue-600">Freeship ({appliedCoupon?.code})</span>
+              <span className="font-body text-sm font-medium text-blue-600">-{formatPrice(shippingDiscount)}</span>
+            </div>
+          )}
             <span className="font-body text-sm">
               {!selectedAddress
                 ? <span className="text-muted-foreground italic text-xs">Chọn địa chỉ</span>
