@@ -21,6 +21,10 @@ export function VoucherProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const removeVoucher = useCallback((id: string) => {
+    setSavedVoucherIds(prev => prev.filter(vid => vid !== id));
+  }, []);
+
   const isVoucherSaved = useCallback((id: string) => {
     return savedVoucherIds.includes(id);
   }, [savedVoucherIds]);
