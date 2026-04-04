@@ -10,6 +10,11 @@ import { useAuth } from '@/context/AuthContext';
 import PaymentSection, { type PaymentMethod } from '@/components/PaymentSection';
 import CouponSection, { type AppliedCoupon } from '@/components/CouponSection';
 import CheckoutActionBar from '@/components/CheckoutActionBar';
+import { findVoucherByCode } from '@/data/vouchers';
+import {
+  Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription,
+} from '@/components/ui/drawer';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription,
 } from '@/components/ui/drawer';
