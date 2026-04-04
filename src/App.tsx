@@ -180,6 +180,12 @@ const App = () => (
                       </div>
                     </ProtectedRoute>
                   } />
+                  <Route path="/vouchers" element={
+                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                      <VoucherWalletPage />
+                      <BottomNav />
+                    </div>
+                  } />
                   <Route path="/login" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">
                       <LoginPage />
