@@ -40,6 +40,7 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
 import AddressManagementPage from "./pages/AddressManagementPage";
 import NotFound from "./pages/NotFound";
+import VoucherWalletPage from "./pages/VoucherWalletPage";
 
 const queryClient = new QueryClient();
 
@@ -178,6 +179,12 @@ const App = () => (
                         <BottomNav />
                       </div>
                     </ProtectedRoute>
+                  } />
+                  <Route path="/vouchers" element={
+                    <div className="mx-auto max-w-md min-h-screen bg-background relative">
+                      <VoucherWalletPage />
+                      <BottomNav />
+                    </div>
                   } />
                   <Route path="/login" element={
                     <div className="mx-auto max-w-md min-h-screen bg-background relative">

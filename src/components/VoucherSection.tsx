@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Truck, Ticket } from 'lucide-react';
 import { useVoucher } from '@/context/VoucherContext';
 import { toast } from 'sonner';
@@ -7,6 +8,7 @@ import VoucherDetailDrawer from '@/components/VoucherDetailDrawer';
 import type { VoucherData } from '@/data/vouchers';
 
 export default function VoucherSection() {
+  const navigate = useNavigate();
   const { saveVoucher, isVoucherSaved } = useVoucher();
   const [selectedVoucher, setSelectedVoucher] = useState<VoucherData | null>(null);
 
@@ -20,7 +22,7 @@ export default function VoucherSection() {
     <section className="px-4 py-4">
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-semibold text-base text-foreground">Mã giảm giá cho bạn</h2>
-        <button className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+        <button onClick={() => navigate('/vouchers')} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
           Xem tất cả &gt;
         </button>
       </div>

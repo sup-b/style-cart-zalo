@@ -4,6 +4,7 @@ import { ALL_VOUCHERS, type VoucherData } from '@/data/vouchers';
 type VoucherContextType = {
   savedVoucherIds: string[];
   saveVoucher: (id: string) => void;
+  removeVoucher: (id: string) => void;
   isVoucherSaved: (id: string) => boolean;
   getSavedVouchers: () => VoucherData[];
 };
@@ -20,6 +21,10 @@ export function VoucherProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const removeVoucher = useCallback((id: string) => {
+    setSavedVoucherIds(prev => prev.filter(vid => vid !== id));
+  }, []);
+
   const isVoucherSaved = useCallback((id: string) => {
     return savedVoucherIds.includes(id);
   }, [savedVoucherIds]);
@@ -29,7 +34,7 @@ export function VoucherProvider({ children }: { children: React.ReactNode }) {
   }, [savedVoucherIds]);
 
   return (
-    <VoucherContext.Provider value={{ savedVoucherIds, saveVoucher, isVoucherSaved, getSavedVouchers }}>
+    <VoucherContext.Provider value={{ savedVoucherIds, saveVoucher, removeVoucher, isVoucherSaved, getSavedVouchers }}>
       {children}
     </VoucherContext.Provider>
   );
