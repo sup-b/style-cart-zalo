@@ -40,6 +40,7 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
 import AddressManagementPage from "./pages/AddressManagementPage";
 import NotFound from "./pages/NotFound";
+import VoucherWalletPage from "./pages/VoucherWalletPage";
 
 const queryClient = new QueryClient();
 
