@@ -8,6 +8,7 @@ import VoucherDetailDrawer from '@/components/VoucherDetailDrawer';
 import type { VoucherData } from '@/data/vouchers';
 
 export default function VoucherSection() {
+  const navigate = useNavigate();
   const { saveVoucher, isVoucherSaved } = useVoucher();
   const [selectedVoucher, setSelectedVoucher] = useState<VoucherData | null>(null);
 
