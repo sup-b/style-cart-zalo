@@ -34,7 +34,7 @@ export function VoucherProvider({ children }: { children: React.ReactNode }) {
   }, [savedVoucherIds]);
 
   return (
-    <VoucherContext.Provider value={{ savedVoucherIds, saveVoucher, isVoucherSaved, getSavedVouchers }}>
+    <VoucherContext.Provider value={{ savedVoucherIds, saveVoucher, removeVoucher, isVoucherSaved, getSavedVouchers }}>
       {children}
     </VoucherContext.Provider>
   );
