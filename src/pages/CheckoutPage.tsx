@@ -10,6 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import PaymentSection, { type PaymentMethod } from '@/components/PaymentSection';
 import CouponSection, { type AppliedCoupon } from '@/components/CouponSection';
 import CheckoutActionBar from '@/components/CheckoutActionBar';
+import { findVoucherByCode } from '@/data/vouchers';
 import {
   Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription,
 } from '@/components/ui/drawer';
@@ -54,9 +55,12 @@ export default function CheckoutPage() {
     [addresses, selectedAddressId],
   );
 
-  const discount = appliedCoupon?.discount ?? 0;
-  const shippingFee = calculateShippingFee(selectedAddress, totalPrice);
-  const finalPrice = Math.max(0, totalPrice - discount + shippingFee);
+  const rawShippingFee = calculateShippingFee(selectedAddress, totalPrice);
+  const isFreeship = appliedCoupon && findVoucherByCode(appliedCoupon.code)?.type === 'freeship';
+  const shippingDiscount = isFreeship ? Math.min(appliedCoupon!.discount, rawShippingFee) : 0;
+  const orderDiscount = isFreeship ? 0 : (appliedCoupon?.discount ?? 0);
+  const shippingFee = rawShippingFee - shippingDiscount;
+  const finalPrice = Math.max(0, totalPrice - orderDiscount + shippingFee);
 
   if (items.length === 0) {
     navigate('/cart');
@@ -158,10 +162,10 @@ export default function CheckoutPage() {
             <span className="font-body text-sm text-muted-foreground">Tạm tính</span>
             <span className="font-body text-sm">{formatPrice(totalPrice)}</span>
           </div>
-          {discount > 0 && (
+          {orderDiscount > 0 && (
             <div className="flex justify-between">
               <span className="font-body text-sm text-green-600">Giảm giá ({appliedCoupon?.code})</span>
-              <span className="font-body text-sm font-medium text-green-600">-{formatPrice(discount)}</span>
+              <span className="font-body text-sm font-medium text-green-600">-{formatPrice(orderDiscount)}</span>
             </div>
           )}
           <div className="flex justify-between">
@@ -174,6 +178,13 @@ export default function CheckoutPage() {
                   : formatPrice(shippingFee)}
             </span>
           </div>
+          {shippingDiscount > 0 && (
+            <div className="flex justify-between">
+              <span className="font-body text-sm text-blue-600">Freeship ({appliedCoupon?.code})</span>
+              <span className="font-body text-sm font-medium text-blue-600">-{formatPrice(shippingDiscount)}</span>
+            </div>
+          )}
+
           <div className="flex justify-between border-t border-border pt-2">
             <span className="font-body text-sm font-semibold">Tổng thanh toán</span>
             <span className="font-display text-base font-bold text-primary">{formatPrice(finalPrice)}</span>
