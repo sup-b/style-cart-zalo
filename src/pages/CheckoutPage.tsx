@@ -187,15 +187,7 @@ export default function CheckoutPage() {
               <span className="font-body text-sm text-blue-600">Freeship ({appliedCoupon?.code})</span>
               <span className="font-body text-sm font-medium text-blue-600">-{formatPrice(shippingDiscount)}</span>
             </div>
-          )}
-            <span className="font-body text-sm">
-              {!selectedAddress
-                ? <span className="text-muted-foreground italic text-xs">Chọn địa chỉ</span>
-                : shippingFee === 0
-                  ? <span className="text-green-600 font-medium">Miễn phí</span>
-                  : formatPrice(shippingFee)}
-            </span>
-          </div>
+          )
           <div className="flex justify-between border-t border-border pt-2">
             <span className="font-body text-sm font-semibold">Tổng thanh toán</span>
             <span className="font-display text-base font-bold text-primary">{formatPrice(finalPrice)}</span>
