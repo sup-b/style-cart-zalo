@@ -187,7 +187,8 @@ export default function CheckoutPage() {
               <span className="font-body text-sm text-blue-600">Freeship ({appliedCoupon?.code})</span>
               <span className="font-body text-sm font-medium text-blue-600">-{formatPrice(shippingDiscount)}</span>
             </div>
-          )
+          )}
+
           <div className="flex justify-between border-t border-border pt-2">
             <span className="font-body text-sm font-semibold">Tổng thanh toán</span>
             <span className="font-display text-base font-bold text-primary">{formatPrice(finalPrice)}</span>
