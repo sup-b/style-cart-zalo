@@ -4,6 +4,7 @@ import { ALL_VOUCHERS, type VoucherData } from '@/data/vouchers';
 type VoucherContextType = {
   savedVoucherIds: string[];
   saveVoucher: (id: string) => void;
+  removeVoucher: (id: string) => void;
   isVoucherSaved: (id: string) => boolean;
   getSavedVouchers: () => VoucherData[];
 };
