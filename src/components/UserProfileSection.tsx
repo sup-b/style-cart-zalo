@@ -1,4 +1,4 @@
-import { Wallet, Package, Truck, Star, Heart, User, CreditCard, Settings, ChevronRight, MapPin } from 'lucide-react';
+import { Wallet, Package, Truck, Star, Heart, User, CreditCard, Settings, ChevronRight, MapPin, TicketPercent } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDbOrders } from '@/hooks/useOrders';
 import { useEffect } from 'react';
@@ -14,6 +14,7 @@ const orderStatuses = [
 
 const menuItems = [
   { icon: Heart, label: 'Sản phẩm yêu thích', path: '/wishlist' },
+  { icon: TicketPercent, label: 'Ví Voucher', path: '/vouchers' },
   { icon: MapPin, label: 'Địa chỉ giao hàng', path: '/addresses' },
   { icon: User, label: 'Thông tin tài khoản', path: '/account-info' },
   { icon: CreditCard, label: 'Phương thức thanh toán', path: '/payment-methods' },
