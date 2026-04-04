@@ -54,9 +54,12 @@ export default function CheckoutPage() {
     [addresses, selectedAddressId],
   );
 
-  const discount = appliedCoupon?.discount ?? 0;
-  const shippingFee = calculateShippingFee(selectedAddress, totalPrice);
-  const finalPrice = Math.max(0, totalPrice - discount + shippingFee);
+  const rawShippingFee = calculateShippingFee(selectedAddress, totalPrice);
+  const isFreeship = appliedCoupon && findVoucherByCode(appliedCoupon.code)?.type === 'freeship';
+  const shippingDiscount = isFreeship ? Math.min(appliedCoupon!.discount, rawShippingFee) : 0;
+  const orderDiscount = isFreeship ? 0 : (appliedCoupon?.discount ?? 0);
+  const shippingFee = rawShippingFee - shippingDiscount;
+  const finalPrice = Math.max(0, totalPrice - orderDiscount + shippingFee);
 
   if (items.length === 0) {
     navigate('/cart');
