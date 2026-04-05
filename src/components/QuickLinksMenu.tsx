@@ -15,7 +15,7 @@ const quickLinks: QuickLink[] = [
   { name: 'Hoàn xu', icon: Coins, color: 'text-amber-500', route: '/collection/hoan-xu' },
   { name: 'Thời trang nữ', icon: Shirt, color: 'text-pink-500', route: '/collection/thoi-trang-nu' },
   { name: 'Deal sốc', icon: Zap, color: 'text-orange-600', route: '/collection/deal-soc' },
-  { name: 'Voucher', icon: Ticket, color: 'text-blue-500', route: null },
+  { name: 'Voucher', icon: Ticket, color: 'text-blue-500', route: '/vouchers' },
   { name: 'Quà tặng', icon: Gift, color: 'text-purple-500', route: '/collection/qua-tang' },
   { name: 'Đang giảm giá', icon: Tag, color: 'text-red-500', route: '/collection/dang-giam-gia' },
   { name: 'Hàng mới', icon: Sparkles, color: 'text-indigo-500', route: '/collection/hang-moi' },
