@@ -26,8 +26,6 @@ export default function QuickLinksMenu() {
   const handleClick = (link: QuickLink) => {
     if (link.route) {
       navigate(link.route);
-    } else {
-      toast('Chức năng lấy mã giảm giá đang phát triển', { icon: '🎫' });
     }
   };
 
