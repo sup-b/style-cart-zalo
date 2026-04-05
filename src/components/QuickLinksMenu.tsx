@@ -1,6 +1,5 @@
 import { Truck, Coins, Shirt, Zap, Ticket, Gift, Tag, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 import type { LucideIcon } from 'lucide-react';
 
 type QuickLink = {
