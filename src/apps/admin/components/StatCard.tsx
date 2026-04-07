@@ -21,7 +21,7 @@ export function StatCard({ title, value, icon: Icon, description, trend, classNa
             <p className="text-2xl font-bold">{value}</p>
             {description && <p className="text-xs text-muted-foreground">{description}</p>}
             {trend && (
-              <p className={cn('text-xs font-medium', trend.isPositive ? 'text-green-600' : 'text-red-600')}>
+              <p className={cn('text-xs font-medium', trend.isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-destructive')}>
                 {trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value)}%
               </p>
             )}
